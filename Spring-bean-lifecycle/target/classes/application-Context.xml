@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://www.springframework.org/schema/util
+       https://www.springframework.org/schema/util/spring-util.xsd
+       http://www.springframework.org/schema/context
+       https://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!--组件扫描-->
+    <context:component-scan base-package="cn.hdj"/>
+
+
+
+
+<!--    <bean id="teacher" class="cn.hdj.entity.Teacher" p:name="dd"/>-->
+
+    <bean id="myBeanPostProcessor" class="cn.hdj.MyBeanPostProcessor" />
+
+    <bean id="myBeanFactoryPostProcessor" class="cn.hdj.MyBeanFactoryPostProcessor"/>
+
+    <bean id="myFactoryBean" class="cn.hdj.entity.MyFactoryBean"/>
+
+
+    <!--配置bean-->
+    <bean id="student" class="cn.hdj.entity.Student" init-method="myInitMethod" destroy-method="myDestroyMethod"/>
+</beans>
