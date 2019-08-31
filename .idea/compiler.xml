@@ -8,11 +8,13 @@
         <outputRelativeToContentRoot value="true" />
         <module name="Spring-bean-lifecycle" />
         <module name="spring-boot-websocket" />
+        <module name="spring-boot-aop-demo" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="spring-boot-aop-demo" options="-parameters" />
       <module name="spring-boot-websocket" options="-parameters" />
     </option>
   </component>

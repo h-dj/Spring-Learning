@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Spring-bean-lifecycle" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/spring-boot-aop-demo" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/spring-boot-websocket" charset="UTF-8" />
   </component>
 </project>
