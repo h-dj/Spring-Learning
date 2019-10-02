@@ -3,6 +3,8 @@ package cn.hdj.filter;
 import javax.servlet.*;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.annotation.WebInitParam;
+import javax.servlet.annotation.WebListener;
+import javax.servlet.annotation.WebServlet;
 import java.io.IOException;
 
 /**
@@ -16,8 +18,12 @@ import java.io.IOException;
         initParams = {
                 @WebInitParam(name = "name", value = "HelloWorld")
         },
-        urlPatterns = "/*"
+        urlPatterns = "/*",
+        dispatcherTypes = DispatcherType.REQUEST,
+        //异步支持
+        asyncSupported = true
 )
+
 public class AnnotationHelloFilter implements Filter {
 
 

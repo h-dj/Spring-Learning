@@ -7,6 +7,7 @@ import cn.hdj.mvninterceptor.interceptor.ValidateInterceptor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,6 +20,11 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig extends WebMvcConfigurationSupport {
 
+    @Bean
+    public LogInterceptor logInterceptor(){
+        return new LogInterceptor();
+    }
+
     /**
      * 添加自定义拦截器
      *
@@ -26,7 +32,8 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
      */
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LogInterceptor())//添加拦截器
+
+        registry.addInterceptor(logInterceptor())//添加拦截器
                 .addPathPatterns("/*") //拦截uri
                 .order(1); //执行顺序
 
@@ -38,15 +45,15 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
     /**
      * 自定义过滤器
      */
-    @Bean
-    public FilterRegistrationBean oneFilter() {
-        FilterRegistrationBean oneFilter = new FilterRegistrationBean();
-        oneFilter.setFilter(new OneFilter());
-        oneFilter.setEnabled(true); //自动注册到Servlet 过滤链中
-        oneFilter.addUrlPatterns("/*");//拦截的请求
-        oneFilter.setOrder(1);//执行顺序
-        return oneFilter;
-    }
+//    @Bean
+//    public FilterRegistrationBean oneFilter() {
+//        FilterRegistrationBean oneFilter = new FilterRegistrationBean();
+//        oneFilter.setFilter(new OneFilter());
+//        oneFilter.setEnabled(true); //自动注册到Servlet 过滤链中
+//        oneFilter.addUrlPatterns("/*");//拦截的请求
+//        oneFilter.setOrder(1);//执行顺序
+//        return oneFilter;
+//    }
 
     @Bean
     public FilterRegistrationBean secondFilter() {

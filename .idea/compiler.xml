@@ -7,13 +7,16 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="Spring-bean-lifecycle" />
-        <module name="spring-boot-websocket" />
         <module name="spring-boot-aop-demo" />
+        <module name="spring-boot-websocket" />
+        <module name="servlet-filter" />
+        <module name="mvc-interceptor" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mvc-interceptor" options="-parameters" />
       <module name="spring-boot-aop-demo" options="-parameters" />
       <module name="spring-boot-websocket" options="-parameters" />
     </option>
