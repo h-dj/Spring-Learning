@@ -6,4 +6,6 @@ package cn.hdj.exampleTransaction;
  * @date 8/26/19
  */
 public interface UserService {
+
+    void addUser();
 }

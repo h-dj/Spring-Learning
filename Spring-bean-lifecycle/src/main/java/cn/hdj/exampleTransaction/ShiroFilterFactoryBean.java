@@ -1,26 +1,28 @@
 package cn.hdj.exampleTransaction;
 
 import org.springframework.beans.factory.FactoryBean;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 
 /**
  * @author hdj
- * @Description:
- * @date 8/26/19
+ * @version 1.0
+ * @date 2019/10/3 10:15
+ * @description:
  */
-public class ShiroFilterFactoryBean implements FactoryBean, BeanPostProcessor {
+
+public class ShiroFilterFactoryBean implements FactoryBean {
+
+    private SecurityManager securityManager;
 
 
+    public void setSecurityManager(SecurityManager securityManager) {
+        this.securityManager = securityManager;
+    }
     @Override
     public Object getObject() throws Exception {
-        return null;
+        return securityManager ;
     }
-
     @Override
     public Class<?> getObjectType() {
-        return null;
+        return SecurityManager.class;
     }
-
-
-
 }
