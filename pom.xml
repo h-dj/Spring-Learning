@@ -7,11 +7,6 @@
     <groupId>cn.hdj</groupId>
     <artifactId>Spring-Learning</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>Spring-bean-lifecycle</module>
-        <module>filter-and-interceptor</module>
-    </modules>
-    <packaging>pom</packaging>
     <properties>
         <java.version>1.8</java.version>
     </properties>
