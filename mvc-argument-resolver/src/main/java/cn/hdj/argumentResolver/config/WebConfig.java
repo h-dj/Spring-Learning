@@ -20,7 +20,7 @@ import java.util.Locale;
  * @date 29/06/2020 23:35
  * @description:
  */
-//@Configuration
+@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
 

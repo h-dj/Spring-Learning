@@ -2,20 +2,20 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ece30128-583e-49f6-ad20-238bb7fceb6f" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/entity/UserList.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/DemoDataBindingController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Spring-bean-lifecycle/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/Spring-bean-lifecycle/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/filter-and-interceptor/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/filter-and-interceptor/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/MvcArgumentResolverApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/MvcArgumentResolverApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/config/WebConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/config/WebConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/entity/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/entity/User.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeInsightWorkspaceSettings">
+    <option name="optimizeImportsOnTheFly" value="true" />
   </component>
   <component name="CodeStyleSettingsInfer">
     <option name="done" value="true" />
@@ -73,6 +73,7 @@
     <property name="RequestMappingsPanelOrder1" value="1" />
     <property name="RequestMappingsPanelWidth0" value="75" />
     <property name="RequestMappingsPanelWidth1" value="75" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
@@ -84,7 +85,7 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.0" />
     <property name="project.structure.side.proportion" value="0.2" />
-    <property name="settings.editor.selected.configurable" value="settings.github" />
+    <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
   </component>
   <component name="RecentsManager">
     <key name="CopyClassDialog.RECENTS_KEY">
@@ -191,10 +192,9 @@
     <list>
       <item itemvalue="Application.ApplicationTest" />
       <item itemvalue="Application.MvnInterceptorApplication" />
+      <item itemvalue="Application.MvcArgumentResolverApplication" />
       <item itemvalue="JUnit.SpringBootAopDemoApplicationTests.testTimeLoggingAspect" />
       <item itemvalue="JUnit.SpringBootAopDemoApplicationTests" />
-      <item itemvalue="Smart Tomcat.Filter" />
-      <item itemvalue="Application.MvcArgumentResolverApplication" />
     </list>
     <recent_temporary>
       <list>
@@ -330,58 +330,80 @@
     <option name="LAST_COMMIT_MESSAGE" value="1. modify: filter vs interceptor" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="2617" y="265" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1593498561010">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="697" y="249" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog" timestamp="1593528397636">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state x="697" y="249" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/0.0.1920.1013@0.0.1920.1013" timestamp="1593528397636" />
     <state x="2617" y="265" key="#com.intellij.codeInsight.editorActions.RestoreReferencesDialog/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593498561010" />
     <state x="2692" y="219" key="#com.intellij.ide.util.MemberChooser" timestamp="1593498696493">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2692" y="219" key="#com.intellij.ide.util.MemberChooser/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593498696493" />
-    <state width="1151" height="485" key="DebuggerActiveHint" timestamp="1593507755908">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state x="470" y="132" key="CommitChangelistDialog2" timestamp="1593531709052">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state x="470" y="132" key="CommitChangelistDialog2/0.0.1920.1013@0.0.1920.1013" timestamp="1593531709052" />
+    <state width="1151" height="455" key="DebuggerActiveHint" timestamp="1593527767368">
+      <screen x="0" y="0" width="1920" height="1013" />
+    </state>
+    <state width="1151" height="455" key="DebuggerActiveHint/0.0.1920.1013@0.0.1920.1013" timestamp="1593527767368" />
     <state width="1151" height="485" key="DebuggerActiveHint/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593507755908" />
     <state x="2667" y="265" key="FileChooserDialogImpl" timestamp="1593499854007">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state x="2667" y="265" key="FileChooserDialogImpl/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593499854007" />
-    <state width="1874" height="336" key="GridCell.Tab.0.bottom" timestamp="1593511080645">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.0.bottom" timestamp="1593528006235">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.0.bottom/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006235" />
     <state width="1874" height="336" key="GridCell.Tab.0.bottom/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080645" />
-    <state width="1874" height="336" key="GridCell.Tab.0.center" timestamp="1593511080645">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.0.center" timestamp="1593528006234">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.0.center/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006234" />
     <state width="1874" height="336" key="GridCell.Tab.0.center/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080645" />
-    <state width="1874" height="336" key="GridCell.Tab.0.left" timestamp="1593511080645">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.0.left" timestamp="1593528006234">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.0.left/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006234" />
     <state width="1874" height="336" key="GridCell.Tab.0.left/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080645" />
-    <state width="1874" height="336" key="GridCell.Tab.0.right" timestamp="1593511080645">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.0.right" timestamp="1593528006235">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.0.right/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006235" />
     <state width="1874" height="336" key="GridCell.Tab.0.right/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080645" />
-    <state width="1874" height="336" key="GridCell.Tab.1.bottom" timestamp="1593511080583">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.1.bottom" timestamp="1593528006236">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.1.bottom/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006236" />
     <state width="1874" height="336" key="GridCell.Tab.1.bottom/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080583" />
-    <state width="1874" height="336" key="GridCell.Tab.1.center" timestamp="1593511080583">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.1.center" timestamp="1593528006235">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.1.center/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006235" />
     <state width="1874" height="336" key="GridCell.Tab.1.center/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080583" />
-    <state width="1874" height="336" key="GridCell.Tab.1.left" timestamp="1593511080583">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.1.left" timestamp="1593528006235">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.1.left/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006235" />
     <state width="1874" height="336" key="GridCell.Tab.1.left/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080583" />
-    <state width="1874" height="336" key="GridCell.Tab.1.right" timestamp="1593511080583">
-      <screen x="1920" y="0" width="1920" height="1080" />
+    <state width="1870" height="155" key="GridCell.Tab.1.right" timestamp="1593528006235">
+      <screen x="0" y="0" width="1920" height="1013" />
     </state>
+    <state width="1870" height="155" key="GridCell.Tab.1.right/0.0.1920.1013@0.0.1920.1013" timestamp="1593528006235" />
     <state width="1874" height="336" key="GridCell.Tab.1.right/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593511080583" />
+    <state x="445" y="130" key="SettingsEditor" timestamp="1593528539306">
+      <screen x="0" y="0" width="1920" height="1013" />
+    </state>
+    <state x="445" y="130" key="SettingsEditor/0.0.1920.1013@0.0.1920.1013" timestamp="1593528539306" />
     <state width="960" height="513" key="XDebugger.FullValuePopup" timestamp="1593486987054">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
     <state width="960" height="513" key="XDebugger.FullValuePopup/1920.0.1920.1080/0.0.1920.1026@1920.0.1920.1080" timestamp="1593486987054" />
+    <state x="615" y="334" key="com.intellij.ide.util.TipDialog" timestamp="1593526538444">
+      <screen x="0" y="0" width="1920" height="1013" />
+    </state>
+    <state x="615" y="334" key="com.intellij.ide.util.TipDialog/0.0.1920.1013@0.0.1920.1013" timestamp="1593526538444" />
     <state x="2360" y="236" key="com.intellij.xdebugger.impl.breakpoints.ui.BreakpointsDialogFactory$2" timestamp="1593492992143">
       <screen x="1920" y="0" width="1920" height="1080" />
     </state>
@@ -410,11 +432,6 @@
           <option name="timeStamp" value="66" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>jar:///usr/lib/jvm/java-1.8.0-amazon-corretto/src.zip!/java/text/SimpleDateFormat.java</url>
-          <line>1548</line>
-          <option name="timeStamp" value="67" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
           <url>jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.1.9.RELEASE/spring-webmvc-5.1.9.RELEASE-sources.jar!/org/springframework/web/servlet/mvc/method/annotation/ServletRequestMethodArgumentResolver.java</url>
           <line>106</line>
           <option name="timeStamp" value="82" />
@@ -428,6 +445,16 @@
           <url>jar://$MAVEN_REPOSITORY$/org/springframework/spring-webmvc/5.1.9.RELEASE/spring-webmvc-5.1.9.RELEASE-sources.jar!/org/springframework/web/servlet/mvc/method/annotation/ServletRequestMethodArgumentResolver.java</url>
           <line>115</line>
           <option name="timeStamp" value="84" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/config/WebConfig.java</url>
+          <line>45</line>
+          <option name="timeStamp" value="86" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/mvc-argument-resolver/src/main/java/cn/hdj/argumentResolver/config/WebConfig.java</url>
+          <line>38</line>
+          <option name="timeStamp" value="88" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
