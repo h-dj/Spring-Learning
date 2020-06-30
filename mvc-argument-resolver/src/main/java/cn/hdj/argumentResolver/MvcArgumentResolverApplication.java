@@ -3,17 +3,23 @@ package cn.hdj.argumentResolver;
 import cn.hdj.argumentResolver.entity.Friend;
 import cn.hdj.argumentResolver.entity.Order;
 import cn.hdj.argumentResolver.entity.User;
+import cn.hdj.argumentResolver.entity.UserList;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
+import java.text.DateFormat;
+import java.text.FieldPosition;
+import java.text.ParsePosition;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 @RestController
@@ -80,35 +86,35 @@ public class MvcArgumentResolverApplication {
 
     /**
      * 请求形式
-     * http://localhost:8080/complexType
-     * http://localhost:8080/complexType?id=1&name=Java
+     * http://localhost:8080/objectType
+     * http://localhost:8080/objectType?id=1&name=Java
      */
-    @GetMapping("/complexType")
-    public String complexType(User user) {
-        return "complexType " + user;
+    @GetMapping("/objectType")
+    public String objectType(User user) {
+        return "objectType " + user;
     }
 
     /**
      * 请求形式(内嵌对象)
-     * http://localhost:8080/complexType2
-     * http://localhost:8080/complexType2?id=1&user.name=Java&user.id=2
+     * http://localhost:8080/objectType2
+     * http://localhost:8080/objectType2?id=1&user.name=Java&user.id=2
      */
-    @GetMapping("/complexType2")
-    public String complexType2(Order order) {
-        return "complexType2 " + order;
+    @GetMapping("/objectType2")
+    public String objectType2(Order order) {
+        return "objectType2 " + order;
     }
 
     /**
      * 请求形式
-     * http://localhost:8080/complexType3?name=Java  name会同时填充到User 和Friend对象上
-     * http://localhost:8080/complexType3?user.name=Java
-     * http://localhost:8080/complexType3?user.name=Java&friend.name=Python
+     * http://localhost:8080/objectType3?name=Java  name会同时填充到User 和Friend对象上
+     * http://localhost:8080/objectType3?user.name=Java
+     * http://localhost:8080/objectType3?user.name=Java&friend.name=Python
      *
      * @see "https://docs.spring.io/spring/docs/current/spring-framework-reference/web.html#mvc-ann-initbinder"
      */
-    @GetMapping("/complexType3")
-    public String complexType3(User user, Friend friend) {
-        return "complexType3  user" + user + "  friend " + friend;
+    @GetMapping("/objectType3")
+    public String objectType3(User user, Friend friend) {
+        return "objectType3  user" + user + "  friend " + friend;
     }
 
     /**
@@ -136,14 +142,128 @@ public class MvcArgumentResolverApplication {
 
 
     /**
-     * 需要转换器
-     *
-     * 1. 配置转换器的方式
-     * 2. 配置格式化器的方式
+     * 配置日期转换器
+     * 1. @InitBinder("date") 参数绑定注册
+     * 2. 实现 WebMvcConfigurer#addFormatters 方法注册
+     * <p>
+     * 请求访问
+     * http://localhost:8080/dateType?date=2020-01-01
      */
     @GetMapping("/dateType")
     public String dateType(Date date) {
         return "dateType  date" + date;
     }
+
+    /**
+     * 注册日期转换 date
+     *
+     * @param binder
+     */
+    @InitBinder("date")
+    public void initBinderDate(WebDataBinder binder) {
+        binder.registerCustomEditor(Date.class, new CustomDateEditor(
+                new DateFormat() {
+                    @Override
+                    public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
+                        Instant instant = date.toInstant();
+                        LocalDate localDate = instant
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate();
+                        return toAppendTo.append(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+                    }
+
+                    @Override
+                    public Date parse(String source, ParsePosition pos) {
+                        pos.setIndex(1);
+                        LocalDate parse = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                        return Date.from(parse.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                    }
+                }, true));
+    }
+
+
+    // 复杂类型  List、Set、Map
+
+
+    /**
+     * 请求形式 (错误做法)
+     * http://localhost:8080/complexType?list=1&list=2
+     * <p>
+     * 注意： 只能获取到第一个值 1
+     */
+    @GetMapping("/complexType")
+    public String complexType(@ModelAttribute("list") List<String> list) {
+        return "complexType " + list;
+    }
+
+    /**
+     * 请求形式
+     * http://localhost:8080/complexType2?list=1&list=2
+     */
+    @GetMapping("/complexType2")
+    public String complexType2(@RequestParam("list") List<String> list) {
+        return "complexType2 " + list;
+    }
+
+    /**
+     * 请求形式
+     * http://localhost:8080/complexType3?list=1&list=2
+     */
+    @GetMapping("/complexType3")
+    public String complexType3(String[] list) {
+        return "complexType3 " + Arrays.toString(list);
+    }
+
+    /**
+     * 请求形式
+     * http://localhost:8080/complexType4
+     * <p>
+     * 请求体
+     * [1,2,3]
+     */
+    @PostMapping("/complexType4")
+    public String complexType4(@RequestBody List<String> list) {
+        return "complexType4 " + list;
+    }
+
+
+    /**
+     * 请求形式(URL 需要编码  http://localhost:8080/complexType5?list[0]=1&list[1]=2)
+     * http://localhost:8080/complexType5?list%5b0%5d=1&list%5b1%5d=2
+     * <p>
+     */
+    @GetMapping("/complexType5")
+    public String complexType5(UserList userList) {
+        return "complexType5 " + userList;
+    }
+
+
+    //json 形式
+
+    /**
+     * 请求
+     * http://localhost:8080/jsonType
+     * 请求体
+     * {
+     * "id": 1,
+     * "name": "Java"
+     * }
+     *
+     * @RequestBody 不支持GET请求
+     */
+    @PostMapping("/jsonType")
+    public String jsonType(@RequestBody User user) {
+        return "jsonType " + user;
+    }
+
+
+    /**
+     *
+     */
+    @PostMapping(path = "/xmlType",consumes = {"application/xml"})
+    public String xmlType(@RequestBody User user) {
+        return "xmlType " + user;
+    }
+
 
 }

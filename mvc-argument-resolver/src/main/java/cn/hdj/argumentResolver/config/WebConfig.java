@@ -3,6 +3,7 @@ package cn.hdj.argumentResolver.config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.core.convert.converter.ConverterFactory;
 import org.springframework.format.Formatter;
 import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -19,7 +20,7 @@ import java.util.Locale;
  * @date 29/06/2020 23:35
  * @description:
  */
-@Configuration
+//@Configuration
 public class WebConfig implements WebMvcConfigurer {
 
 
@@ -36,7 +37,8 @@ public class WebConfig implements WebMvcConfigurer {
             public Date parse(String text, Locale locale) {
                 System.out.println("解析字符串为 Date" + text);
                 LocalDate parse = LocalDate.parse(text, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                return Date.from(parse.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+                Date from = Date.from(parse.atStartOfDay(ZoneId.systemDefault()).toInstant());
+                return from;
             }
 
             @Override
@@ -49,16 +51,6 @@ public class WebConfig implements WebMvcConfigurer {
                 return localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             }
         });
-
-        //参数传入转换
-        registry.addConverter(new Converter<String, Date>() {
-            @Override
-            public Date convert(String source) {
-                System.out.println("字符串转换为Date " + source);
-                return Date.from(ZonedDateTime.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd")).toInstant());
-            }
-        });
-
 
     }
 }

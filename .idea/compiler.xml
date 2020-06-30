@@ -6,17 +6,29 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="Spring-bean-lifecycle" />
-        <module name="mvc-interceptor" />
-        <module name="spring-boot-websocket" />
-        <module name="servlet-filter" />
+        <module name="Spring-IOC" />
         <module name="spring-boot-aop-demo" />
+        <module name="servlet-filter" />
+        <module name="mvn-interceptor" />
+        <module name="Spring-bean-lifecycle" />
+        <module name="spring-boot-websocket" />
+        <module name="Spring-Learning" />
+        <module name="mvc-argument-resolver" />
+        <module name="mvc-interceptor" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spring-cache" target="1.8" />
+      <module name="Spring-IOC" target="1.8" />
+      <module name="spring-mustache" target="1.8" />
+      <module name="spring-rabbitmq" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="mvc-argument-resolver" options="-parameters" />
       <module name="mvc-interceptor" options="-parameters" />
+      <module name="mvn-interceptor" options="-parameters" />
       <module name="spring-boot-aop-demo" options="-parameters" />
       <module name="spring-boot-websocket" options="-parameters" />
     </option>
