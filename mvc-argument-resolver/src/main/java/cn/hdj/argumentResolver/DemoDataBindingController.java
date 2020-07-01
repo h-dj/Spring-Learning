@@ -1,21 +1,9 @@
 package cn.hdj.argumentResolver;
 
-import cn.hdj.argumentResolver.entity.Friend;
-import cn.hdj.argumentResolver.entity.Order;
-import cn.hdj.argumentResolver.entity.User;
-import cn.hdj.argumentResolver.entity.UserList;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
+import cn.hdj.argumentResolver.entity.*;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -24,10 +12,10 @@ import java.util.List;
  * @author hdj
  * @version 1.0
  * @date 30/06/2020 22:46
- * @description:  SpringMVC 中不同类型的数据绑定
+ * @description: SpringMVC 中不同类型的数据绑定
  */
 @RestController
-public class DemoDataBindingController {
+public class DemoDataBindingController extends BaseController {
 
     // ============ 基本类型
 
@@ -109,26 +97,6 @@ public class DemoDataBindingController {
         return "objectType3  user" + user + "  friend " + friend;
     }
 
-    /**
-     * 初始化绑定参数user 标识前缀
-     *
-     * @param binder
-     */
-    @InitBinder("user")
-    public void initBinderUser(WebDataBinder binder) {
-        binder.setFieldDefaultPrefix("user.");
-    }
-
-    /**
-     * 初始化绑定参数friend 标识前缀
-     *
-     * @param binder
-     */
-    @InitBinder("friend")
-    public void initBinderFriend(WebDataBinder binder) {
-        binder.setFieldDefaultPrefix("friend.");
-    }
-
 
     // 日期类型
 
@@ -149,43 +117,36 @@ public class DemoDataBindingController {
 
 
     /**
-     *  http://localhost:8080/dateType?date1=2020-01-01
+     * http://localhost:8080/dateType?date1=2020-01-01
      */
     @GetMapping("/dateType2")
     public String dateType2(@DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) Date date1) {
         return "dateType2  date" + date1;
     }
 
-    /**
-     * 注册日期转换 date
-     *
-     * @param binder
-     */
-    @InitBinder("date")
-    public void initBinderDate(WebDataBinder binder) {
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(
-                new DateFormat() {
-                    @Override
-                    public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
-                        Instant instant = date.toInstant();
-                        LocalDate localDate = instant
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate();
-                        return toAppendTo.append(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-                    }
 
-                    @Override
-                    public Date parse(String source, ParsePosition pos) {
-                        pos.setIndex(1);
-                        LocalDate parse = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        return Date.from(parse.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    }
-                }, true));
+    //http://localhost:8080/dateType3?birthday=2020-01-01
+    @GetMapping("/dateType3")
+    public String dateType3(UserDate userDate) {
+        return "dateType3  date" + userDate;
+    }
+
+    /**
+     * 配置 @RequestBody注解， 是采用HttpMessageConverter进行转换
+     * <p>
+     * http://localhost:8080/dateType4
+     * {
+     * birthday："2020-01-01"
+     * }
+     */
+    @PostMapping("/dateType4")
+    @ResponseBody
+    public UserDate dateType4(@RequestBody UserDate userDate) {
+        return userDate;
     }
 
 
     // 复杂类型  List、Set、Map
-
 
     /**
      * 请求形式 (错误做法)
@@ -262,6 +223,9 @@ public class DemoDataBindingController {
     //xml形式
 
     /**
+     * http://localhost:8080/xmlType
+     *
+     *
      * <?xml version="1.0" encoding="utf-8"?>
      * <user>
      * <id>1</id>

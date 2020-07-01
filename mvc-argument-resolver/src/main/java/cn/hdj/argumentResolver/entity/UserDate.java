@@ -2,14 +2,16 @@ package cn.hdj.argumentResolver.entity;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @author hdj
  * @version 1.0
- * @date 29/06/2020 21:51
+ * @date 7/1/20 11:07 AM
  * @description:
  */
 @Data
-public class Friend {
-    Integer id;
-    String name;
+public class UserDate {
+
+    private Date birthday;
 }
