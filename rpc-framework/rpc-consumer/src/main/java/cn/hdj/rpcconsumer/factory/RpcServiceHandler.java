@@ -6,6 +6,7 @@ import cn.hdj.rpcconsumer.RpcResponse;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.lang.TypeReference;
 import cn.hutool.core.util.TypeUtil;
+import cn.hutool.json.JSON;
 import cn.hutool.json.JSONUtil;
 
 import java.io.InputStream;
@@ -44,14 +45,13 @@ public class RpcServiceHandler implements InvocationHandler {
         request.setParamTypes(method.getParameterTypes());
         request.setParams(params);
         // 链接服务器调用服务
-        Object rst = execute(request,method);
-
+        Object rst = execute(request, method);
         // 调用后
         System.out.println("执行远程方法后，也可以做些事情");
         return rst;
     }
 
-    private Object execute(RpcRequest request,Method method) throws Throwable {
+    private Object execute(RpcRequest request, Method method) throws Throwable {
         // 打开远端服务连接
         Socket server = new Socket(host, port);
         OutputStream out = null;
@@ -61,6 +61,7 @@ public class RpcServiceHandler implements InvocationHandler {
             out = server.getOutputStream();
             IoUtil.writeUtf8(out, false, JSONUtil.toJsonStr(request));
             IoUtil.flush(out);
+            //告知服务端已写入完成
             server.shutdownOutput();
 
             // 2. 服务端输入流，获取返回数据，转换参数类型
@@ -68,16 +69,17 @@ public class RpcServiceHandler implements InvocationHandler {
             in = server.getInputStream();
             String json = IoUtil.read(in, "utf-8");
             RpcResponse response = JSONUtil.toBean(json, new TypeReference<RpcResponse>() {
-                @Override
-                public Type getType() {
-                    return TypeUtil.getReturnType(method);
-                }
             }, true);
             // 3. 返回服务端响应结果
             if (response.getError() != null) { // 服务器产生异常
                 throw response.getError();
             }
-            return response.getResult();
+            return JSONUtil.toBean((JSON) response.getResult(), new TypeReference<Object>() {
+                @Override
+                public Type getType() {
+                    return TypeUtil.getReturnType(method);
+                }
+            }, true);
         } finally {
             IoUtil.close(in);
             IoUtil.close(out);

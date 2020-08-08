@@ -28,7 +28,7 @@ public class RpcProvider {
     private static final ExecutorService executorService = new ThreadPoolExecutor(
             10,
             10,
-            30,
+            3,
             TimeUnit.SECONDS,
             new LinkedBlockingQueue<Runnable>()
     );
@@ -44,7 +44,6 @@ public class RpcProvider {
             final Socket socket = serverSocket.accept();
             executorService.execute(new Handler(socket, service));
         }
-
     }
 
 
@@ -106,13 +105,7 @@ public class RpcProvider {
                     e1.printStackTrace();
                 }
             } finally {
-                try {
-                    IoUtil.close(client.getOutputStream());
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
                 IoUtil.close(client);
-
             }
         }
     }

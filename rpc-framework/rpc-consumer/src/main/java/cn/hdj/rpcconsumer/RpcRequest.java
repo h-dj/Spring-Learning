@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author hdj
  * @version 1.0
  * @date 2020/8/7 上午2:36
- * @description:
+ * @description: 包装需要调用服务端的方法参数
  */
 @Data
 public class RpcRequest implements Serializable {
