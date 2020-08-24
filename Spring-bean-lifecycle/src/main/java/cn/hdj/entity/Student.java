@@ -3,7 +3,6 @@ package cn.hdj.entity;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
@@ -18,6 +17,14 @@ public class Student implements InitializingBean, DisposableBean, BeanFactoryAwa
     private String name;
     private Integer age;
 
+
+    private Teacher teacher;
+
+    @Autowired
+    public void setTeacher(Teacher teacher) {
+        System.out.println("注入teacher");
+        this.teacher = teacher;
+    }
 
     public Student() {
         System.out.println("初始化构造函数");
@@ -73,16 +80,17 @@ public class Student implements InitializingBean, DisposableBean, BeanFactoryAwa
 
 
     @PreDestroy
-    public void springPreDestroy(){
+    public void springPreDestroy() {
         System.out.println("-----@PreDestroy-----");
 
     }
+
     @Override
     public void destroy() throws Exception {
         System.out.println("-----DisposableBean.destroy()------");
     }
 
-    public void myDestroyMethod(){
+    public void myDestroyMethod() {
         System.out.println("---destroy-method---");
     }
 

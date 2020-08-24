@@ -1,6 +1,8 @@
 package cn.hdj.argumentResolver;
 
+import cn.hdj.argumentResolver.entity.User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Map;
 
@@ -59,7 +61,7 @@ public class MethodArgumentResolverController {
     }
 
     /**
-     *  http://localhost:8080//employeesContacts/contactNumber=123456789
+     * http://localhost:8080//employeesContacts/contactNumber=123456789
      */
     @GetMapping("/employeesContacts/{contactNumber}")
     public String getEmployeeBycontactNumber(@MatrixVariable(required = true) String contactNumber) {
@@ -68,9 +70,32 @@ public class MethodArgumentResolverController {
 
     /**
      * http://localhost:8080/employeeData/id=1;name=John;contactNumber=2200112334
+     * <p>
+     * 键值对间使用 ; 分隔
      */
     @GetMapping("employeeData/{employee}")
     public String getEmployeeData(@MatrixVariable Map<String, String> matrixVars) {
         return "employeesContacts" + matrixVars;
     }
+
+
+    /**
+     * http://localhost:8080/addUser
+     * {
+     * "id": 0,
+     * "name": "Java"
+     * }
+     */
+    @PostMapping("addUser")
+    public String addUser(@RequestBody User user) {
+        return "addUser" + user;
+    }
+
+
+    @PostMapping(value = "/upload",consumes = "multipart/mixed")
+    public String upload(@RequestPart User user, @RequestPart MultipartFile file) {
+        return "upload" + user +" "+ file;
+    }
+
+
 }

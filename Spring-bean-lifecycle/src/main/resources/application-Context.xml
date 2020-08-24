@@ -15,7 +15,7 @@
 
 
 
-<!--    <bean id="teacher" class="cn.hdj.entity.Teacher" p:name="dd"/>-->
+    <bean id="teacher" class="cn.hdj.entity.Teacher" p:name="dd"/>
 
     <bean id="myBeanPostProcessor" class="cn.hdj.MyBeanPostProcessor"  />
 
