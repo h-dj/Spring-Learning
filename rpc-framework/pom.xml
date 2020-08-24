@@ -5,9 +5,15 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cn.hdj</groupId>
-    <artifactId>Spring-Learning</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>rpc-framework</artifactId>
     <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>rpc-provider</module>
+        <module>rpc-consumer</module>
+        <module>rpc-dubbo-consumer</module>
+        <module>rpc-dubbo-producer</module>
+    </modules>
+    <packaging>pom</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,17 +23,5 @@
         <maven.compiler.target>1.8</maven.compiler.target>
     </properties>
 
-    <repositories>
-        <repository>
-            <id>alimaven</id>
-            <name>aliyun maven</name>
-            <url>http://maven.aliyun.com/nexus/content/groups/public/</url>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+
 </project>
