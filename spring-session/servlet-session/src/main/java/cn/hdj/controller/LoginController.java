@@ -28,12 +28,6 @@ public class LoginController extends HttpServlet {
         String username = (String) map.get("username");
         String password = (String) map.get("password");
 
-        System.out.println(username + " " + password);
-
-
-        resp.getWriter()
-                .println("处理成功");
-
 
     }
 }

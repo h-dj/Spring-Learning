@@ -1,5 +1,6 @@
 ### Spring Learning
 
-1. [Filter vs Interceptor](doc/filter_interceptor.MD)
-2. [Spring bean lifecycle](doc/spring_bean_lifecycle.MD)
-3. Spring AOP 
+- 过滤器与拦截器
+- springmvc 参数解析
+- spring bean 的生命周期
+- rpc 了解

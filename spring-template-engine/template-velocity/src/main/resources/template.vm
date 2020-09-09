@@ -1,0 +1,92 @@
+读取变量:
+使用velocity 引擎模板读取字符串 ===> $name $project
+
+==========
+使用velocity 引擎模板读取整型 =====> $int $double
+
+==========
+使用velocity 引擎模板读取对象，使用 . 来读取对象中的属性值 =====> $obj.name $obj.age
+
+==========
+使用velocity 引擎模板遍历数组 =====>
+"!"用来强制把不存在的变量显示为空白。如：当找不到username的时候，$username返回字符串"$username"，而$!username返回空字符串""
+
+#foreach($item in $arr)
+    $!item
+#end
+
+
+=========
+条件语句学习，打印数组奇数数字， 空对象使用 $null， 如果值为空，可以使用 | 输出可选值
+#foreach($item in $arr)
+    #if($item == $null)
+       ${item|'该值为空'}
+    #elseif($item % 2 != 0)
+         $item
+    #else
+        不是奇数
+    #end
+#end
+
+
+=========
+关系操作符 AND、OR和NOT操作符，分别对应&&、||和!例如：
+
+
+=========
+变量定义 使用命令: \#set(\$name = "java")
+#set($name ="velocity-java")
+打印自定义的变量 $name
+
+========
+变量赋值  命令: \#set(\$hello ="hello \$name")
+#set($hello ="hello $name")
+打印自定义的变量\$hello  $hello
+
+
+=======
+宏，可以理解为函数定义 ;语法:  \# 用来标识关键词
+\#macro(macroName arg1 arg2 ...)
+...
+\#end
+
+#macro(sumFunc $num1 $num2)
+   #set($sum = $num1+$num2)
+   $sum
+#end
+调用函数 \#sumFunc(1,2) 结果 #sumFunc(1,2)
+
+
+
+======
+\#parse 和 \#include  引入其他模板文件
+\#parse 会将引用的内容当成类似于源码文件，会将内容在引入的地方进行解析，如：
+#parse("foo.vm")
+
+\#include  是将引入文件当成资源文件，会将引入内容原封不动地以文本输出，如：
+#include("foo.vm")
+
+
+======
+在velocity 中使用注释
+
+\#\#  表示单行注释
+
+\#\*
+    多行注释
+*#
+
+=======
+不解析内容，使用指令 \#\[[ ]]#
+#[[
+#foreach ($woogie in $boogie)
+  nothing will happen to $woogie
+#end
+]]#
+
+
+======
+定义引用块
+#define( $block )Hello $who#end
+#set( $who = 'World!' )
+$block
