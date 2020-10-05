@@ -8,10 +8,6 @@
     <artifactId>Spring-Learning</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>spring-template-engine</module>
-        <module>spring-template-engine/template-velocity</module>
-    </modules>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

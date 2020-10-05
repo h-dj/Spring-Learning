@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author hdj
@@ -144,6 +145,22 @@ public class DemoDataBindingController extends BaseController {
     public UserDate dateType4(@RequestBody UserDate userDate) {
         return userDate;
     }
+
+    /**
+     * http://localhost:8080/dateType5
+     *
+     * 采用表单的形式提交参数
+     * Content-Type:	application/x-www-form-urlencoded
+     *
+     * birthday=2020-01-01
+     *
+     * 请求方法不能使用GET， 参数接收不到
+     */
+    @PostMapping("/dateType5")
+    public String dateType5(UserDate2 userDate) {
+        return "dateType5  date" + userDate;
+    }
+
 
 
     // 复杂类型  List、Set、Map
