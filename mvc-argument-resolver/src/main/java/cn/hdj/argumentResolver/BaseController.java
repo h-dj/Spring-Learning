@@ -47,12 +47,15 @@ public class BaseController {
      *
      * @param binder
      */
-//    @InitBinder("date")
+    @InitBinder
     public void initBinderDate(WebDataBinder binder) {
+
+
         binder.registerCustomEditor(Date.class, new CustomDateEditor(
                 new DateFormat() {
                     @Override
                     public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
+                        System.out.println("解析Date为 InitBinder ");
                         Instant instant = date.toInstant();
                         LocalDate localDate = instant
                                 .atZone(ZoneId.systemDefault())
@@ -62,6 +65,8 @@ public class BaseController {
 
                     @Override
                     public Date parse(String source, ParsePosition pos) {
+
+                        System.out.println("解析字符串为 InitBinder ");
                         pos.setIndex(1);
                         LocalDate parse = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
                         return Date.from(parse.atStartOfDay(ZoneId.systemDefault()).toInstant());

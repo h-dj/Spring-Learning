@@ -107,6 +107,9 @@ public class DemoDataBindingController extends BaseController {
      * 1. @InitBinder("date") 参数绑定注册
      * 2. 实现 WebMvcConfigurer#addFormatters 方法注册  适用用全局配置
      * 3. 使用注解@DateTimeFormat 可灵活单独配置
+     *
+     * 优先级问题：
+     *
      * <p>
      * 请求访问
      * http://localhost:8080/dateType?date=2020-01-01
@@ -118,11 +121,11 @@ public class DemoDataBindingController extends BaseController {
 
 
     /**
-     * http://localhost:8080/dateType?date1=2020-01-01
+     * http://localhost:8080/dateType2?date1=2020-01-01
      */
     @GetMapping("/dateType2")
     public String dateType2(@DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) Date date1) {
-        return "dateType2  date" + date1;
+        return "dateType2  date456" + date1;
     }
 
 
@@ -163,7 +166,7 @@ public class DemoDataBindingController extends BaseController {
 
 
 
-    // 复杂类型  List、Set、Map
+    // 复杂类型  List、对象
 
     /**
      * 请求形式 (错误做法)
@@ -187,12 +190,24 @@ public class DemoDataBindingController extends BaseController {
 
     /**
      * 请求形式
+     * http://localhost:8080/complexType2_1?list=1,2,3
+     */
+    @GetMapping("/complexType2_1")
+    public String complexType2_1(@RequestParam("list") List<String> list) {
+        return "complexType2_1 " + list;
+    }
+
+
+    /**
+     * 请求形式
      * http://localhost:8080/complexType3?list=1&list=2
      */
     @GetMapping("/complexType3")
     public String complexType3(String[] list) {
         return "complexType3 " + Arrays.toString(list);
     }
+
+
 
     /**
      * 请求形式
@@ -211,6 +226,7 @@ public class DemoDataBindingController extends BaseController {
      * 请求形式(URL 需要编码  http://localhost:8080/complexType5?list[0]=1&list[1]=2)
      * http://localhost:8080/complexType5?list%5b0%5d=1&list%5b1%5d=2
      * <p>
+     *     http://localhost:8080/complexType5?list=1,2,3
      */
     @GetMapping("/complexType5")
     public String complexType5(UserList userList) {

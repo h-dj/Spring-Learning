@@ -2,9 +2,11 @@ package cn.hdj.argumentResolver;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
-
+@Controller
 @SpringBootApplication
 public class MvcArgumentResolverApplication {
 
@@ -13,9 +15,10 @@ public class MvcArgumentResolverApplication {
     }
 
 
-    @GetMapping("index")
+    @ResponseBody
+    @GetMapping(value = {"/",""})
     public String index() {
-        return "index";
+        return "Hello World!";
     }
 
 
