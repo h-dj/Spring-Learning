@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+<script>
+    $.ajax({
+       type: "GET",
+       url: "http://localhost:8080/index",
+       headers:{
+            "CMALL-TOKEN":"123456"
+       },
+       xhrFields:{
+            withCredentials:true
+       },
+       success: function(msg){
+         console.log(msg);
+       }
+    });
+</script>
+</body>
+</html>
