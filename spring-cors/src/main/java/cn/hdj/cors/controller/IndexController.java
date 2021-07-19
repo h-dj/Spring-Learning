@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 public class IndexController {
 
     @ResponseBody
-    @RequestMapping("index")
+    @RequestMapping("hello")
     public String indxe(HttpServletRequest request) {
         System.out.println("进入====>" + request.getRequestURI());
         return "Hello!";
