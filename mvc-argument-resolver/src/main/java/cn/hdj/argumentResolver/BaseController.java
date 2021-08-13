@@ -1,17 +1,17 @@
 package cn.hdj.argumentResolver;
 
 import org.springframework.beans.propertyeditors.CustomDateEditor;
+import org.springframework.format.Formatter;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
-import java.text.ParsePosition;
+import java.text.*;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * @author hdj
@@ -47,30 +47,20 @@ public class BaseController {
      *
      * @param binder
      */
-    @InitBinder
+//    @InitBinder
     public void initBinderDate(WebDataBinder binder) {
+        binder.addCustomFormatter(new Formatter<Date>() {
+            @Override
+            public Date parse(String text, Locale locale) throws ParseException {
+                System.out.println("InitBinder addCustomFormatter String to Date  ");
+                return new SimpleDateFormat("yyyy-MM-dd").parse(text);
+            }
 
-
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(
-                new DateFormat() {
-                    @Override
-                    public StringBuffer format(Date date, StringBuffer toAppendTo, FieldPosition fieldPosition) {
-                        System.out.println("解析Date为 InitBinder ");
-                        Instant instant = date.toInstant();
-                        LocalDate localDate = instant
-                                .atZone(ZoneId.systemDefault())
-                                .toLocalDate();
-                        return toAppendTo.append(localDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-                    }
-
-                    @Override
-                    public Date parse(String source, ParsePosition pos) {
-
-                        System.out.println("解析字符串为 InitBinder ");
-                        pos.setIndex(1);
-                        LocalDate parse = LocalDate.parse(source, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
-                        return Date.from(parse.atStartOfDay(ZoneId.systemDefault()).toInstant());
-                    }
-                }, true));
+            @Override
+            public String print(Date date, Locale locale) {
+                System.out.println("InitBinder addCustomFormatter  Date to String  ");
+                return new SimpleDateFormat("yyyy-MM-dd").format(date);
+            }
+        });
     }
 }

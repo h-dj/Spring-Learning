@@ -1,6 +1,8 @@
 package cn.hdj.argumentResolver.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Date;
 
@@ -13,5 +15,8 @@ import java.util.Date;
 @Data
 public class UserDate {
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM")
     private Date birthday;
+
+    private Date date;
 }

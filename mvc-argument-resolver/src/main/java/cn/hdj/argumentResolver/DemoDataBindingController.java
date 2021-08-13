@@ -4,10 +4,12 @@ import cn.hdj.argumentResolver.entity.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author hdj
@@ -17,6 +19,8 @@ import java.util.Map;
  */
 @RestController
 public class DemoDataBindingController extends BaseController {
+
+
 
     // ============ 基本类型
 
@@ -59,6 +63,19 @@ public class DemoDataBindingController extends BaseController {
     @GetMapping("/baseType3")
     public String baseType3(@RequestParam(value = "b", required = true) Integer a) {
         return "baseType3 " + a;
+    }
+
+    /**
+     * 多个参数
+     *  http://localhost:8080/baseType4?age=10&name=Java
+     *
+     * @param age
+     * @param name
+     * @return
+     */
+    @GetMapping("/baseType4")
+    public String baseType3(@RequestParam Integer age, String name) {
+        return "baseType4  age:" + age + "  name="+name;
     }
 
 
@@ -107,8 +124,7 @@ public class DemoDataBindingController extends BaseController {
      * 1. @InitBinder("date") 参数绑定注册
      * 2. 实现 WebMvcConfigurer#addFormatters 方法注册  适用用全局配置
      * 3. 使用注解@DateTimeFormat 可灵活单独配置
-     *
-     * 优先级问题：
+     * 4. 使用字符串 接收，后台自行转换为 Date 或 LocalDate
      *
      * <p>
      * 请求访问
@@ -124,15 +140,15 @@ public class DemoDataBindingController extends BaseController {
      * http://localhost:8080/dateType2?date1=2020-01-01
      */
     @GetMapping("/dateType2")
-    public String dateType2(@DateTimeFormat(pattern = "yyyy-MM-dd", iso = DateTimeFormat.ISO.DATE) Date date1) {
-        return "dateType2  date456" + date1;
+    public String dateType2(@DateTimeFormat(pattern = "yyyy-MM-dd") Date date1) {
+        return "dateType2  date1 " + date1;
     }
 
 
-    //http://localhost:8080/dateType3?birthday=2020-01-01
+    //http://localhost:8080/dateType3?date=2020-01-01
     @GetMapping("/dateType3")
-    public String dateType3(UserDate userDate) {
-        return "dateType3  date" + userDate;
+    public Date dateType3(UserDate userDate) {
+        return userDate.getDate();
     }
 
     /**
@@ -140,7 +156,8 @@ public class DemoDataBindingController extends BaseController {
      * <p>
      * http://localhost:8080/dateType4
      * {
-     * birthday："2020-01-01"
+     *     "birthday": "2020-08",
+     *     "date": "2021-08-13"
      * }
      */
     @PostMapping("/dateType4")
@@ -149,21 +166,30 @@ public class DemoDataBindingController extends BaseController {
         return userDate;
     }
 
+
     /**
-     * http://localhost:8080/dateType5
+     * 使用时间戳传递
      *
-     * 采用表单的形式提交参数
-     * Content-Type:	application/x-www-form-urlencoded
+     * http://localhost:8080/dateType6?date=1628752881
      *
-     * birthday=2020-01-01
-     *
-     * 请求方法不能使用GET， 参数接收不到
+     * @param date
+     * @return
      */
-    @PostMapping("/dateType5")
-    public String dateType5(UserDate2 userDate) {
-        return "dateType5  date" + userDate;
+    @GetMapping("/dateType6")
+    public String dateType5(Long date) {
+        return "dateType6  date" + new Date(date);
     }
 
+    /**
+     * http://localhost:8080/dateType7?date=2021-08-12
+     * @param date
+     * @return
+     * @throws ParseException
+     */
+    @GetMapping("/dateType7")
+    public String dateType7(String date) throws ParseException {
+        return "dateType7  date" + new SimpleDateFormat("yyyy-MM-dd").parse(date);
+    }
 
 
     // 复杂类型  List、对象
