@@ -47,7 +47,7 @@ public class BaseController {
      *
      * @param binder
      */
-//    @InitBinder
+    @InitBinder
     public void initBinderDate(WebDataBinder binder) {
         binder.addCustomFormatter(new Formatter<Date>() {
             @Override
