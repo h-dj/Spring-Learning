@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>幂等操作</title>
+    <script src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+
+<form action="javascript:void(0);">
+    <input type="hidden" name="product_id" value="1001"><br/>
+    <input type="hidden" name="product_sku_id" value="1001"><br/>
+   产品名称： <input type="text" name="product_name" value="iphone11" readonly><br/>
+   规格： <input type="text"  value="午夜色" readonly><br/>
+   价格： <input type="text" name="price" value="6666.66" readonly><br/>
+   数量： <input type="number" name="quantity" value="1"><br/>
+    <button id="addCart">加入购物车</button>
+</form>
+
+<script>
+    $(function(){
+        $("#addCart").click(function(){
+            $.ajax({
+               type: "POST",
+               url: "/cart/add",
+               data: JSON.stringify({
+                    productId: $('input[name=product_id]').val(),
+                    productSkuId: $('input[name=product_sku_id]').val(),
+                    productName: $('input[name=product_name]').val(),
+                    price: $('input[name=price]').val(),
+                    quantity: $('input[name=quantity]').val()
+               }),
+               contentType:'application/json',
+               dataType:'json',
+               success: function(msg){
+                 alert( "Data Saved: " + msg );
+               }
+            });
+        });
+    });
+</script>
+</body>
+</html>
