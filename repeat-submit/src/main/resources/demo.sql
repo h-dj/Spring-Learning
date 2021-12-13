@@ -10,8 +10,6 @@ CREATE TABLE `cart` (
   PRIMARY KEY (`id`)
 )
 ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_0900_ai_ci
 COMMENT='购物车表';
 
 DROP TABLE IF EXISTS `deduplicate`;
@@ -22,6 +20,4 @@ CREATE TABLE `deduplicate` (
 	CONSTRAINT deduplicate_UN UNIQUE KEY (unique_id)
 )
 ENGINE=InnoDB
-DEFAULT CHARSET=utf8mb4
-COLLATE=utf8mb4_0900_ai_ci
 COMMENT='去重表';

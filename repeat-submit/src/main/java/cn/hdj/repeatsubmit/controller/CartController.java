@@ -1,6 +1,8 @@
 package cn.hdj.repeatsubmit.controller;
 
 
+import cn.hdj.repeatsubmit.aspect.ApiRepeatLockSubmit;
+import cn.hdj.repeatsubmit.aspect.ApiRepeatUniqueIdSubmit;
 import cn.hdj.repeatsubmit.po.CartPO;
 import cn.hdj.repeatsubmit.service.ICartService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class CartController {
     @Autowired
     private ICartService iCartService;
 
+
+//    @ApiRepeatUniqueIdSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
+    @ApiRepeatLockSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
     @PostMapping(value = "/add")
     public ResponseEntity add(@RequestBody CartPO cartPO) throws InterruptedException {
         cartPO.setMemberId(getUserId());
