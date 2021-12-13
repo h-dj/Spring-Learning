@@ -30,15 +30,14 @@ public class CartController {
     private ICartService iCartService;
 
 
-//    @ApiRepeatUniqueIdSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
+    //    @ApiRepeatUniqueIdSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
     @ApiRepeatLockSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
     @PostMapping(value = "/add")
     public ResponseEntity add(@RequestBody CartPO cartPO) throws InterruptedException {
         cartPO.setMemberId(getUserId());
         iCartService.addCart(cartPO);
         return ResponseEntity
-                .ok()
-                .build();
+                .ok("ok");
     }
 
 

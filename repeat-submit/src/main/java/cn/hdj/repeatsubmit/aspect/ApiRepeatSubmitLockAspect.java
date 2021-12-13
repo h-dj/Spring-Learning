@@ -1,11 +1,10 @@
 package cn.hdj.repeatsubmit.aspect;
 
 
-import cn.hdj.repeatsubmit.po.DeduplicatePO;
-import cn.hdj.repeatsubmit.service.IDeduplicateService;
 import cn.hdj.repeatsubmit.utils.SpringElUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import cn.hdj.repeatsubmit.utils.ZookeeperLockUtil;
+import org.apache.curator.framework.CuratorFramework;
+import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
@@ -13,6 +12,8 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.api.RBucket;
+import org.redisson.api.RLock;
+import org.redisson.api.RScript;
 import org.redisson.api.RedissonClient;
 import org.redisson.codec.TypedJsonJacksonCodec;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 使用 去重表 实现幂等
@@ -33,6 +35,8 @@ import java.util.Map;
 @Aspect
 public class ApiRepeatSubmitLockAspect {
 
+    public static final String LOCK_PREFIX = "lock_";
+
     @Autowired
     private ApplicationContext applicationContext;
 
@@ -40,12 +44,26 @@ public class ApiRepeatSubmitLockAspect {
     private RedissonClient redissonClient;
 
 
+    private CuratorFramework curatorFramework;
+
+    @Autowired
+    public void setCuratorFramework(CuratorFramework curatorFramework) {
+        this.curatorFramework = curatorFramework;
+        ZookeeperLockUtil.setCuratorFramework(curatorFramework);
+    }
+
     @Pointcut("@annotation(cn.hdj.repeatsubmit.aspect.ApiRepeatLockSubmit)")
     public void pointCut() {
     }
 
-
-    @Around("pointCut()")
+    /**
+     * 分布式式锁使用 Redisson
+     *
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
+//    @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Signature signature = joinPoint.getSignature();
@@ -65,7 +83,60 @@ public class ApiRepeatSubmitLockAspect {
                 .setKeyExpression(keyExpression)
                 .build();
 
+        RLock lock = this.redissonClient.getLock(LOCK_PREFIX + uniqueId);
 
-        return joinPoint.proceed();
+        //判断是否被抢占了锁
+        if (lock.isLocked()) {
+            throw new DuplicateKeyException("不要重复提交!");
+        }
+
+        //尝试获取锁， 默认3分钟会超时过期， 并启动线程监听，如果当前线程仍持有锁，会自动续签
+        if (lock.tryLock()) {
+            try {
+                return joinPoint.proceed();
+            } finally {
+                lock.unlock();
+            }
+        }
+        throw new DuplicateKeyException("不要重复提交!");
+    }
+
+
+    /**
+     * 分布式式锁使用 Zookeeper
+     *
+     * @param joinPoint
+     * @return
+     * @throws Throwable
+     */
+    @Around("pointCut()")
+    public Object around2(ProceedingJoinPoint joinPoint) throws Throwable {
+
+        Signature signature = joinPoint.getSignature();
+        MethodSignature msig = (MethodSignature) signature;
+        Method targetMethod = msig.getMethod();
+
+
+        ApiRepeatLockSubmit apiRepeatSubmit = targetMethod.getAnnotation(ApiRepeatLockSubmit.class);
+        String keyExpression = apiRepeatSubmit.keyExpression();
+
+        Map<String, Object> argMap = SpringElUtil.getArgMap(joinPoint);
+
+        String uniqueId = SpringElUtil.<String>createElBuilder()
+                .setArgMap(argMap)
+                .setBeanFactory(applicationContext)
+                .setTarget(String.class)
+                .setKeyExpression(keyExpression)
+                .build();
+
+        InterProcessMutex interProcessMutex = ZookeeperLockUtil.tryLock(uniqueId, 3, TimeUnit.SECONDS);
+        if (interProcessMutex != null) {
+            try {
+                return joinPoint.proceed();
+            } finally {
+                ZookeeperLockUtil.unLock(uniqueId, interProcessMutex);
+            }
+        }
+        throw new DuplicateKeyException("不要重复提交!");
     }
 }

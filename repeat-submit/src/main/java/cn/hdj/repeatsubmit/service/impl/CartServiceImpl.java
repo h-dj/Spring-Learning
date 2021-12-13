@@ -36,8 +36,9 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, CartPO> implements 
         if (list == null || list.isEmpty()) {
             //添加到购物车
             //模拟耗时
-            TimeUnit.MILLISECONDS.sleep(500);
+            TimeUnit.SECONDS.sleep(20);
             this.save(cartPO);
+            System.err.println("添加成功!");
         } else {
             //数量加一
             CartPO updateCartPO = list.get(0);

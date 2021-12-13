@@ -13,12 +13,27 @@ spring:
         url-pattern: /druid/*
   redis:
     # https://github.com/redisson/redisson/wiki/2.-Configuration
-    redisson:
-      database: '0'
-      singleServerConfig:
-        address: "redis://127.0.0.1:6379"
-
+    database: '0'
+    host: '127.0.0.1'
+    port: '6379'
+    password: '123456'
+#    ssl:
+#    timeout:
+#    cluster:
+#      nodes:
+#    sentinel:
+#      master:
+#      nodes:
 mybatis-plus:
   mapper-locations: classpath*:/mapper/**/*.xml  #mapper.xml文件路径
   configuration:
     map-underscore-to-camel-case: true #驼峰
+
+
+zookeeper:
+  #例如 ip1:port1,ip2:port2,ip3:port3
+  address: 127.0.0.1:2181     #zookeeper Server地址,如果有多个,使用","隔离
+  retryCount: 5               #重试次数
+  elapsedTimeMs: 5000         #重试间隔时间
+  sessionTimeoutMs: 30000     #Session超时时间
+  connectionTimeoutMs: 10000  #连接超时时间
