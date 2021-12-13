@@ -24,8 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @Date 2021/9/15 17:29
  */
 
-@RequestMapping("cacheconcurrent")
-@RestController
+//@RequestMapping("cacheconcurrent")
+//@RestController
 public class CacheConcurrentController {
     public static final Logger log = LoggerFactory.getLogger(CacheConcurrentController.class);
 

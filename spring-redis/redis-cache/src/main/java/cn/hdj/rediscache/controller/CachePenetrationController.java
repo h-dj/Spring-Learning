@@ -27,8 +27,8 @@ import java.util.stream.IntStream;
  * @Author huangjiajian
  * @Date 2021/9/16 11:17
  */
-@RestController
-@RequestMapping(value = "/cachepenetration")
+//@RestController
+//@RequestMapping(value = "/cachepenetration")
 public class CachePenetrationController {
 
     public static final Logger log = LoggerFactory.getLogger(CachePenetrationController.class);

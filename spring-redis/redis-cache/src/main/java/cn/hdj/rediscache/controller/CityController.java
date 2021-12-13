@@ -26,8 +26,8 @@ import java.util.stream.IntStream;
  * @Author huangjiajian
  * @Date 2021/9/15 14:42
  */
-@RestController
-@RequestMapping
+//@RestController
+//@RequestMapping
 public class CityController {
 
     public static final Logger log = LoggerFactory.getLogger(CityController.class);

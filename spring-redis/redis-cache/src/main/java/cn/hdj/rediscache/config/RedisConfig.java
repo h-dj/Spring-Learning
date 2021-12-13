@@ -2,6 +2,8 @@ package cn.hdj.rediscache.config;
 
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
+import org.redisson.client.codec.StringCodec;
+import org.redisson.codec.JsonJacksonCodec;
 import org.redisson.config.Config;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,9 +25,10 @@ public class RedisConfig {
                 // use "rediss://" for SSL connection
                 //.setPassword("123456")
                 .setDatabase(0)
-                .setAddress("redis://192.168.30.4:6379");
-
+                .setAddress("redis://192.168.30.5:6379");
+        config.setCodec(new JsonJacksonCodec());
         RedissonClient redisson = Redisson.create(config);
+
         return redisson;
     }
 
