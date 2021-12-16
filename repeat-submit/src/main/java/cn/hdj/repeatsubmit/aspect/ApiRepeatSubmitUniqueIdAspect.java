@@ -14,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Component;
 import org.aspectj.lang.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.lang.reflect.Method;
 import java.util.Map;
@@ -38,6 +39,7 @@ public class ApiRepeatSubmitUniqueIdAspect {
     }
 
 
+    @Transactional(rollbackFor = Exception.class)
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 

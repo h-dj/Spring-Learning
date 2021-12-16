@@ -33,10 +33,10 @@ public class CartServiceImpl extends ServiceImpl<CartMapper, CartPO> implements 
                 .eq(CartPO::getProductId, cartPO.getProductId())
                 .eq(CartPO::getProductSkuId, cartPO.getProductSkuId());
         List<CartPO> list = this.list(queryWrapper);
+        //模拟耗时
+        TimeUnit.SECONDS.sleep(1);
         if (list == null || list.isEmpty()) {
             //添加到购物车
-            //模拟耗时
-            TimeUnit.SECONDS.sleep(20);
             this.save(cartPO);
             System.err.println("添加成功!");
         } else {

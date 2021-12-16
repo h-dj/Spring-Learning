@@ -37,6 +37,8 @@ public class ZookeeperLockUtil {
     public static InterProcessMutex tryLock(String key, long expireTime, TimeUnit timeUnit) {
         try {
             InterProcessMutex mutex = new InterProcessMutex(curatorFramework, String.format(NODE_PATH, key));
+            mutex.isAcquiredInThisProcess();
+
             boolean locked = mutex.acquire(expireTime, timeUnit);
             if (locked) {
                 System.out.println("申请锁(" + key + ")成功！");

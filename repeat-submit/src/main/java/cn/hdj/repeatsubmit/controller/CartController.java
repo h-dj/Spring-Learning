@@ -2,6 +2,7 @@ package cn.hdj.repeatsubmit.controller;
 
 
 import cn.hdj.repeatsubmit.aspect.ApiRepeatLockSubmit;
+import cn.hdj.repeatsubmit.aspect.ApiRepeatTokenSubmit;
 import cn.hdj.repeatsubmit.aspect.ApiRepeatUniqueIdSubmit;
 import cn.hdj.repeatsubmit.po.CartPO;
 import cn.hdj.repeatsubmit.service.ICartService;
@@ -30,14 +31,14 @@ public class CartController {
     private ICartService iCartService;
 
 
-    //    @ApiRepeatUniqueIdSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
-    @ApiRepeatLockSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
+    //@ApiRepeatUniqueIdSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
+    //@ApiRepeatLockSubmit(keyExpression = "@cartController.getUserId()+'_'+#cartPO.getProductId() +'_'+#cartPO.getProductSkuId()")
+    @ApiRepeatTokenSubmit()
     @PostMapping(value = "/add")
-    public ResponseEntity add(@RequestBody CartPO cartPO) throws InterruptedException {
+    public String add(@RequestBody CartPO cartPO) throws InterruptedException {
         cartPO.setMemberId(getUserId());
         iCartService.addCart(cartPO);
-        return ResponseEntity
-                .ok("ok");
+        return "ok";
     }
 
 
@@ -49,5 +50,6 @@ public class CartController {
     public Long getUserId() {
         return 1001L;
     }
+
 }
 

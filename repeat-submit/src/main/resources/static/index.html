@@ -19,10 +19,25 @@
 
 <script>
     $(function(){
+        $.ajax({
+               type: "GET",
+               url: "/token/create",
+               contentType:'application/json',
+               success: function(token){
+                  sessionStorage.setItem('x-token',token);
+               }
+        });
+
+
         $("#addCart").click(function(){
+        
+            $("#addCart").attr('disabled','disabled');
             $.ajax({
                type: "POST",
                url: "/cart/add",
+               headers:{
+                    'x-token':sessionStorage.getItem('x-token')
+               },
                data: JSON.stringify({
                     productId: $('input[name=product_id]').val(),
                     productSkuId: $('input[name=product_sku_id]').val(),
@@ -31,9 +46,11 @@
                     quantity: $('input[name=quantity]').val()
                }),
                contentType:'application/json',
-               dataType:'json',
                success: function(msg){
-                 alert( "Data Saved: " + msg );
+                 console.log(msg)
+               },
+               complete: function(msg){
+                $("#addCart").removeAttr('disabled');
                }
             });
         });

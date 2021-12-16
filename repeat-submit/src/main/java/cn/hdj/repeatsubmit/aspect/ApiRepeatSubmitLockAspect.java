@@ -63,7 +63,7 @@ public class ApiRepeatSubmitLockAspect {
      * @return
      * @throws Throwable
      */
-//    @Around("pointCut()")
+    @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Signature signature = joinPoint.getSignature();
@@ -90,11 +90,13 @@ public class ApiRepeatSubmitLockAspect {
             throw new DuplicateKeyException("不要重复提交!");
         }
 
-        //尝试获取锁， 默认3分钟会超时过期， 并启动线程监听，如果当前线程仍持有锁，会自动续签
+        //尝试获取锁， 默认30秒会超时过期， 并启动线程监听，自动续签
+        //当客户端异常，终止了续签线程，会删除锁，避免发生死锁
         if (lock.tryLock()) {
             try {
                 return joinPoint.proceed();
             } finally {
+                //释放锁
                 lock.unlock();
             }
         }
@@ -109,7 +111,7 @@ public class ApiRepeatSubmitLockAspect {
      * @return
      * @throws Throwable
      */
-    @Around("pointCut()")
+//    @Around("pointCut()")
     public Object around2(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Signature signature = joinPoint.getSignature();
@@ -129,11 +131,14 @@ public class ApiRepeatSubmitLockAspect {
                 .setKeyExpression(keyExpression)
                 .build();
 
-        InterProcessMutex interProcessMutex = ZookeeperLockUtil.tryLock(uniqueId, 3, TimeUnit.SECONDS);
+        //尝试获取锁，不等待，没有获取到马上抛出异常
+        //Zookeeper lock 采用的是临时节点，客户端会话失效或连接关闭后，该节点会被自动删除，避免发生死锁
+        InterProcessMutex interProcessMutex = ZookeeperLockUtil.tryLock(uniqueId, 0, TimeUnit.SECONDS);
         if (interProcessMutex != null) {
             try {
                 return joinPoint.proceed();
             } finally {
+                //释放锁
                 ZookeeperLockUtil.unLock(uniqueId, interProcessMutex);
             }
         }
