@@ -34,11 +34,6 @@ import java.util.concurrent.TimeUnit;
 @Component
 @Aspect
 public class ApiRepeatSubmitTokenAspect {
-
-
-    @Autowired
-    private ApplicationContext applicationContext;
-
     @Autowired
     private TokenService tokenService;
 
@@ -49,13 +44,8 @@ public class ApiRepeatSubmitTokenAspect {
     @Pointcut("@annotation(cn.hdj.repeatsubmit.aspect.ApiRepeatTokenSubmit)")
     public void pointCut() {
     }
-
-
-
     @Before("pointCut()")
     public void Before(JoinPoint joinPoint) {
         tokenService.checkToken(request);
     }
-
-
 }

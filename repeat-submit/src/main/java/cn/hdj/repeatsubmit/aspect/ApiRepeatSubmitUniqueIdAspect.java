@@ -33,12 +33,9 @@ public class ApiRepeatSubmitUniqueIdAspect {
     @Autowired
     private IDeduplicateService iDeduplicateService;
 
-
     @Pointcut("@annotation(cn.hdj.repeatsubmit.aspect.ApiRepeatUniqueIdSubmit)")
     public void pointCut() {
     }
-
-
     @Transactional(rollbackFor = Exception.class)
     @Around("pointCut()")
     public Object around(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -46,13 +43,12 @@ public class ApiRepeatSubmitUniqueIdAspect {
         Signature signature = joinPoint.getSignature();
         MethodSignature msig = (MethodSignature) signature;
         Method targetMethod = msig.getMethod();
-
-
         ApiRepeatUniqueIdSubmit apiRepeatSubmit = targetMethod.getAnnotation(ApiRepeatUniqueIdSubmit.class);
         String keyExpression = apiRepeatSubmit.keyExpression();
 
         Map<String, Object> argMap = SpringElUtil.getArgMap(joinPoint);
 
+        //获取业务参数，组成唯一ID
         String uniqueId = SpringElUtil.<String>createElBuilder()
                 .setArgMap(argMap)
                 .setBeanFactory(applicationContext)

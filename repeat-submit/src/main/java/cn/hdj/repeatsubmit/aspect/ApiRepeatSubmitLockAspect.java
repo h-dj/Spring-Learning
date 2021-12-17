@@ -35,7 +35,7 @@ import java.util.concurrent.TimeUnit;
 @Aspect
 public class ApiRepeatSubmitLockAspect {
 
-    public static final String LOCK_PREFIX = "lock_";
+    public static final String LOCK_PREFIX = "lock:";
 
     @Autowired
     private ApplicationContext applicationContext;
@@ -46,7 +46,7 @@ public class ApiRepeatSubmitLockAspect {
 
     private CuratorFramework curatorFramework;
 
-    @Autowired
+//    @Autowired
     public void setCuratorFramework(CuratorFramework curatorFramework) {
         this.curatorFramework = curatorFramework;
         ZookeeperLockUtil.setCuratorFramework(curatorFramework);
@@ -91,7 +91,8 @@ public class ApiRepeatSubmitLockAspect {
         }
 
         //尝试获取锁， 默认30秒会超时过期， 并启动线程监听，自动续签
-        //当客户端异常，终止了续签线程，会删除锁，避免发生死锁
+        //当客户端异常，终止了续签线程，超时后会删除锁，避免发生死锁
+        //如果自己手动设置了超时过期时间，则不会启动线程监听，自动续签
         if (lock.tryLock()) {
             try {
                 return joinPoint.proceed();

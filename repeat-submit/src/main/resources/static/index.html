@@ -30,12 +30,13 @@
 
 
         $("#addCart").click(function(){
-        
+            //按钮置灰
             $("#addCart").attr('disabled','disabled');
             $.ajax({
                type: "POST",
                url: "/cart/add",
                headers:{
+                    //携带token
                     'x-token':sessionStorage.getItem('x-token')
                },
                data: JSON.stringify({

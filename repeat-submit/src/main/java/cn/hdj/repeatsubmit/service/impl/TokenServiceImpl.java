@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -33,8 +34,9 @@ public class TokenServiceImpl implements TokenService {
 
     @Override
     public String createToken() {
-        String ID = new AlternativeJdkIdGenerator().generateId().toString();
+        String ID = UUID.randomUUID().toString();
         RBucket<String> bucket = this.redissonClient.<String>getBucket(String.format("%s:%s", TOKEN_PREFIX, ID), StringCodec.INSTANCE);
+        //默认超时5分钟
         bucket.trySet(ID, TOKEN_EXPIRE_TIME, TimeUnit.SECONDS);
         return ID;
     }
@@ -52,7 +54,7 @@ public class TokenServiceImpl implements TokenService {
         }
 
         // 不为空则校验token信息
-        RBucket<String> bucket = this.redissonClient.getBucket(String.format("%s:%s", TOKEN_PREFIX, token),StringCodec.INSTANCE);
+        RBucket<String> bucket = this.redissonClient.getBucket(String.format("%s:%s", TOKEN_PREFIX, token), StringCodec.INSTANCE);
 
         //获取，并删除
         String ID = bucket.getAndDelete();
@@ -60,7 +62,6 @@ public class TokenServiceImpl implements TokenService {
         if (ID == null) {
             throw new DuplicateKeyException("重复提交，提交失败");
         }
-
         return true;
     }
 

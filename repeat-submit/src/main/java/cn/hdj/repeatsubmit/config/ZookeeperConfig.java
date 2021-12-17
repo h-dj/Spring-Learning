@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @Author huangjiajian
  * @Date 2021/12/13 下午11:01
  */
-@Configuration
+//@Configuration
 public class ZookeeperConfig {
 
     /**
