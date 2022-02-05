@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.redisson.RedissonRedLock;
 import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RScript;
@@ -93,7 +94,7 @@ public class ApiRepeatSubmitLockAspect {
         //尝试获取锁， 默认30秒会超时过期， 并启动线程监听，自动续签
         //当客户端异常，终止了续签线程，超时后会删除锁，避免发生死锁
         //如果自己手动设置了超时过期时间，则不会启动线程监听，自动续签
-        if (lock.tryLock()) {
+        if (lock.tryLock(1,TimeUnit.DAYS)) {
             try {
                 return joinPoint.proceed();
             } finally {
