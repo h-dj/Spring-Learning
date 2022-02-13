@@ -1,6 +1,5 @@
 package cn.hdj.springbootaopdemo.entity;
 
-import sun.rmi.runtime.Log;
 
 /**
  * @author hdj
