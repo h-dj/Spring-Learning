@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@127.0.0.1:1521:XE
+    password: cemmall
+    username: cemmall
+  redis:
+    host: 127.0.0.1
+    lettuce:
+      pool:
+        max-active: 20
+        max-idle: 20
+        max-wait: 5000ms
+        min-idle: 5
+    port: 6379
+    timeout: 10000
