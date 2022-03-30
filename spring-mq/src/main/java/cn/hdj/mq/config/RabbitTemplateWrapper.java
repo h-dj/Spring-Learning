@@ -23,10 +23,18 @@ public class RabbitTemplateWrapper {
     }
 
     public void convertAndSend(String exchange, String routingKey, Object msg){
+        this.convertAndSend(exchange,routingKey,msg,null);
+    }
+
+
+    public void convertAndSend(String exchange, String routingKey, Object msg,String expiration){
         rabbitTemplate.convertAndSend(exchange, routingKey, msg, new MessagePostProcessor() {
             @Override
             public Message postProcessMessage(Message message) throws AmqpException {
                 MessageProperties messageProperties = message.getMessageProperties();
+                if(exchange!=null){
+                    messageProperties.setExpiration(expiration);
+                }
                 messageProperties.setDeliveryMode(MessageDeliveryMode.PERSISTENT);
                 messageProperties.setCorrelationId(UUID.randomUUID().toString());
                 return message;

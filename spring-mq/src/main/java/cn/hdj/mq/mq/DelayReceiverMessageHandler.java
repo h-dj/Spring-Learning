@@ -8,17 +8,19 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
- * @Description: TODO(这里用一句话描述这个类的作用)
+ * @Description: 延迟消息监听器
  * @Author huangjiajian
  * @Date 2022/3/5 下午10:15
  */
 @Slf4j
 @Component
 //监听队列
-@RabbitListener(queues = "confirm_test_queue")
-public class ReceiverMessage1 {
+@RabbitListener(queues = "lock_merchant_dead_queue")
+public class DelayReceiverMessageHandler {
 
     @RabbitHandler
     public void processHandler(String msg, Channel channel, Message message) throws IOException {
@@ -27,9 +29,8 @@ public class ReceiverMessage1 {
             log.info("小富收到消息：{}", msg);
 
             //TODO 具体业务
-            if(1==1){
-                throw new IOException();
-            }
+            log.info("队列延迟的时间 {} ",message.getMessageProperties().getDelay());
+            log.info("接受时间 {}", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
 
             //手动确认
             channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
