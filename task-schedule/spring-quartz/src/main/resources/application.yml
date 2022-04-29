@@ -1,0 +1,53 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://127.0.0.1:33060/quartz_demo?useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: root@01234560
+  # 定时配置
+  quartz:
+    # 将任务等保存化到数据库
+    job-store-type: jdbc
+    # 程序结束时会等待quartz相关的内容结束
+    wait-for-jobs-to-complete-on-shutdown: true
+    # QuartzScheduler启动时更新己存在的Job,这样就不用每次修改targetObject后删除qrtz_job_details表对应记录
+    overwrite-existing-jobs: true
+    # 相关属性配置
+    properties:
+      org:
+        quartz:
+          # 自定义 Quartz 数据源
+          dataSource:
+            globalJobDataSource:
+              # URL必须大写 ，这里直接使用项目数据源
+              URL: ${spring.datasource.url}
+              driver:  ${spring.datasource.driver-class-name}
+              maxConnections: 5
+              username: ${spring.datasource.username}
+              password: ${spring.datasource.password}
+              # 必须指定数据源类型
+              provider: hikaricp
+          scheduler:
+            # scheduler的实例名
+            #instanceName: scheduler
+            instanceId: AUTO
+          jobStore:
+            # 数据源
+            dataSource: globalJobDataSource
+            # JobStoreTX将用于独立环境，提交和回滚都将由这个类处理
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            # 驱动配置
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            # 表前缀
+            tablePrefix: QRTZ_
+            useProperties: false
+            misfireThreshold: 60000 #在被认为“失火”之前，调度程序将“容忍”一个Triggers将其下一个启动时间通过的毫秒数。默认值（如果您在配置中未输入此属性）为60000（60秒）。
+            clusterCheckinInterval: 5000 #设置此实例“检入”*与群集的其他实例的频率（以毫秒为单位）。影响检测失败实例的速度。
+            isClustered: true #打开集群功能
+          # 线程池配置
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            # 线程数
+            threadCount: 10
+            # 优先级
+            threadPriority: 5

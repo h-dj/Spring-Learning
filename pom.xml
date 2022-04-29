@@ -8,10 +8,7 @@
     <artifactId>Spring-Learning</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
-    <modules>
-        <module>spring-cors</module>
-        <module>task-schedule/java-task</module>
-    </modules>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
