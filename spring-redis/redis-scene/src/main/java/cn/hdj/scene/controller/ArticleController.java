@@ -75,8 +75,4 @@ public class ArticleController {
         return 10001L;
     }
 
-
-    {
-        BitMapBloomFilter
-    }
 }
