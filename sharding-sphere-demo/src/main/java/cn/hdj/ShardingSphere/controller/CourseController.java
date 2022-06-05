@@ -32,4 +32,12 @@ public class CourseController {
         return ResponseEntity
                 .ok(list);
     }
+
+    @GetMapping(value = "/queryById")
+    public ResponseEntity queryById(Long id) {
+
+        CoursePO coursePO = this.courseService.getById(id);
+        return ResponseEntity
+                .ok(coursePO);
+    }
 }

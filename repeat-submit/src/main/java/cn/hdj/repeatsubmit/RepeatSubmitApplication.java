@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class RepeatSubmitApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(RepeatSubmitApplication.class, args);
 	}
 

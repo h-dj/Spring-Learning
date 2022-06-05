@@ -7,7 +7,7 @@ spring:
       master:
         type: com.zaxxer.hikari.HikariDataSource
         driverClassName: com.mysql.cj.jdbc.Driver
-        jdbcUrl: jdbc:mysql://localhost:3306/test?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
+        jdbcUrl: jdbc:mysql://localhost:4400/test?useUnicode=true&characterEncoding=utf8&tinyInt1isBit=false&useSSL=false&serverTimezone=GMT
         username: root
         password: master
       slave1:
@@ -23,7 +23,7 @@ spring:
         username: root
         password: slave2
 
-    # shardingsphere 属性
+    #  打开 sql 输出日志
     props:
       sql.show: true
     masterslave:
@@ -36,3 +36,19 @@ spring:
           slave-data-source-names:
             - slave1
             - slave2
+      tables:
+        course:
+          # 指定course表分布的情况，配置表在哪个数据库里，表的名称都是什么 m1.course_1,m1.course_2
+          actual-data-nodes: master.course_$->{1..2}
+          # 指定 course 表里面主键 id 的生成策略 SNOWFLAKE
+          key-generator:
+            column: id
+            type: SNOWFLAKE
+            # 配置分表策略    约定 id 值偶数添加到 course_1 表，如果 id 是奇数添加到 course_2 表
+          table-strategy:
+            inline:
+              algorithm-expression: course_$->{id % 2 + 1}
+              sharding-column: id
+  main:
+    # 一个实体类对应两张表，覆盖
+    allow-bean-definition-overriding: true

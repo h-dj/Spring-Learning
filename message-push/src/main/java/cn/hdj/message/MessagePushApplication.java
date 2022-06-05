@@ -1,5 +1,6 @@
 package cn.hdj.message;
 
+import cn.hutool.core.util.IdUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
