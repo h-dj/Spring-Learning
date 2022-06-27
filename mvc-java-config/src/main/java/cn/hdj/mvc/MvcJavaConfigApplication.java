@@ -21,7 +21,7 @@ public class MvcJavaConfigApplication {
         service.addConnector(connector);
         tomcat.addWebapp("", System.getProperty("user.dir") + File.separator);
         server.start();
-        System.out.println("tomcat·şÎñÆ÷Æô¶¯³É¹¦..");
+        System.out.println("tomcatæœåŠ¡å™¨å¯åŠ¨æˆåŠŸ..");
         System.out.println("http://127.0.0.1:8080");
         server.await();
     }
