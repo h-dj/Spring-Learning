@@ -24,6 +24,14 @@ public interface ISysUserService extends IService<SysUser> {
     UserAuthDTO getUserByUsername(String username);
 
     /**
+     * 通过手机号查询用户
+     *
+     * @param mobile
+     * @return
+     */
+    UserAuthDTO getUserByMobile(String mobile);
+
+    /**
      * 登录
      *
      * @param loginUserDTO

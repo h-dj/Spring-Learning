@@ -25,7 +25,11 @@ public enum ResponseCodeEnum {
     CAPTCHA_WRONG(100002, "验证码错误"),
     USERNAME_OR_PASSWORD_WRONG(100003, "用户名或密码错误！"),
     LOCK_ACCOUNT(100004, "账户被锁定或禁用,请稍后再试！"),
-    EXPIRE_ACCOUNT(100005, "账户已过期！");
+    EXPIRE_ACCOUNT(100005, "账户已过期！"),
+    SMS_CAPTCHA_WRONG(100006, "短信验证码错误！"),
+    USER_NOT_EXIST(100007, "用户不存在"),
+
+        ;
 
     private Integer code;
     private String msg;

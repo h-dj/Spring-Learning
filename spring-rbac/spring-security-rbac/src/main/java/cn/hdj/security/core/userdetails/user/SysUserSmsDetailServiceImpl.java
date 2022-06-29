@@ -1,8 +1,10 @@
 package cn.hdj.security.core.userdetails.user;
 
 import cn.hdj.common.api.ResponseCodeEnum;
+import cn.hdj.common.enums.AuthenticationIdentityEnum;
 import cn.hdj.modules.user.domain.dto.UserAuthDTO;
 import cn.hdj.modules.user.service.ISysUserService;
+import cn.hdj.security.core.userdetails.user.SysUserDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -22,20 +24,20 @@ import org.springframework.stereotype.Service;
  * @Description: TODO(这里用一句话描述这个类的作用)
  */
 @Slf4j
-@Service(value = "sysUserDetailsService")
-public class SysUserDetailServiceImpl implements UserDetailsService {
+@Service(value = "sysUserSmsDetailsService")
+public class SysUserSmsDetailServiceImpl implements UserDetailsService {
 
-    @Lazy
     @Autowired
+    @Lazy
     private  ISysUserService sysUserService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SysUserDetails userDetails = null;
-        UserAuthDTO result = sysUserService.getUserByUsername(username);
+        UserAuthDTO result = sysUserService.getUserByMobile(username);
         userDetails = new SysUserDetails(result);
         if (userDetails == null) {
-            throw new UsernameNotFoundException(ResponseCodeEnum.USERNAME_OR_PASSWORD_WRONG.getMsg());
+            throw new UsernameNotFoundException(ResponseCodeEnum.USER_NOT_EXIST.getMsg());
         } else if (!userDetails.isEnabled()) {
             throw new DisabledException(ResponseCodeEnum.LOCK_ACCOUNT.getMsg());
         } else if (!userDetails.isAccountNonLocked()) {
@@ -43,6 +45,8 @@ public class SysUserDetailServiceImpl implements UserDetailsService {
         } else if (!userDetails.isAccountNonExpired()) {
             throw new AccountExpiredException(ResponseCodeEnum.EXPIRE_ACCOUNT.getMsg());
         }
+
+        userDetails.setAuthenticationIdentity(AuthenticationIdentityEnum.MOBILE.getValue());   // 认证身份标识:mobile
         return userDetails;
     }
 }

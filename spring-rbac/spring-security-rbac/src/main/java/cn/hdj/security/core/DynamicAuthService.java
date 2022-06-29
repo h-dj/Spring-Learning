@@ -7,8 +7,11 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 
@@ -22,10 +25,12 @@ import java.util.stream.Collectors;
  * @Description: TODO(这里用一句话描述这个类的作用)
  */
 @Slf4j
-@AllArgsConstructor
+@Service(value = "da")
 public class DynamicAuthService {
 
-    private final ISysPermissionService sysPermissionService;
+    @Autowired
+    @Lazy
+    private ISysPermissionService sysPermissionService;
 
     public boolean check(Authentication authentication, HttpServletRequest request) {
 

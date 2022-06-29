@@ -32,4 +32,10 @@ public interface GlobalConstants {
      */
     String AUTHORITY_PREFIX = "ROLE_";
 
+
+    /**
+     * 短信验证码key前缀
+     */
+    String SMS_CODE_PREFIX = "SMS_CODE:";
+
 }

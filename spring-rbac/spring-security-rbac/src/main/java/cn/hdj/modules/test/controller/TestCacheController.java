@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  */
 @Api(tags = "缓存操作接口",value = "缓存操作描述")
 @RestController
-@RequestMapping(value = "/cache")
+@RequestMapping(value = "/test/cache")
 @Slf4j
 public class TestCacheController {
 

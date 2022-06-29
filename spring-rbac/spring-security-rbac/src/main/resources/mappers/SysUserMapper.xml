@@ -32,4 +32,20 @@
         WHERE
         t1.username = #{username} and t1.deleted=0
     </select>
+    <select id="getUserByMobile" resultType="cn.hdj.modules.user.domain.dto.UserAuthDTO">
+        SELECT
+        t1.id userId,
+        t1.username,
+        t1.nickname,
+        t1.PASSWORD,
+        t1.STATUS,
+        t1.dept_id deptId,
+        t3.CODE roleCode
+        FROM
+        sys_user t1
+        LEFT JOIN sys_user_role t2 ON t2.user_id = t1.id
+        LEFT JOIN sys_role t3 ON t3.id = t2.role_id
+        WHERE
+        t1.mobile = #{mobile} and t1.deleted=0
+    </select>
 </mapper>

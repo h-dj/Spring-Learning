@@ -20,7 +20,7 @@
 		<mybatis-plus.version>3.5.1</mybatis-plus.version>
 		<druid.version>1.2.8</druid.version>
 		<knife4j.version>3.0.3</knife4j.version>
-		<redisson.version>3.16.6</redisson.version>
+		<redisson.version>3.17.4</redisson.version>
 		<jjwt.version>0.9.0</jjwt.version>
 	</properties>
 	<dependencies>
@@ -88,6 +88,12 @@
 			<artifactId>redisson-spring-boot-starter</artifactId>
 			<version>${redisson.version}</version>
 		</dependency>
+
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+		</dependency>
+
 
 		<!-- ... other dependency elements ... -->
 		<dependency>

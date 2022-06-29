@@ -16,4 +16,8 @@ import org.apache.ibatis.annotations.Param;
 public interface SysUserMapper extends BaseMapper<SysUser> {
 
     UserAuthDTO getUserByUserName(@Param("username") String username);
+
+    UserAuthDTO getUserByMobile(@Param("mobile")String mobile);
+
+
 }
