@@ -1,6 +1,11 @@
 package cn.hdj.server.domain;
 
+import cn.hutool.core.date.DatePattern;
+import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.util.IdUtil;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @Description: TODO(这里用一句话描述这个类的作用)
@@ -24,4 +29,17 @@ public class ApiResponseHeader {
     private String serviceId;
     private String serviceSn;
     private String desc;
+    private String businessChannel;
+
+    public ApiResponseHeader() {
+        this.code = "200";
+        this.desc = "ok";
+        this.serviceTime = DateUtil.format(new Date(), DatePattern.PURE_DATETIME_FORMAT);
+        this.serviceSn = IdUtil.fastSimpleUUID();
+        this.sid = IdUtil.fastSimpleUUID();
+        this.businessChannel = "test";
+        this.serviceId = "sys.test";
+
+
+    }
 }

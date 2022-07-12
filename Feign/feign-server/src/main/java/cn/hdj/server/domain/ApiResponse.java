@@ -1,5 +1,6 @@
 package cn.hdj.server.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -16,6 +17,7 @@ public class ApiResponse {
     /**
      * 未加密响应
      */
+    @JsonIgnore
     private Object response;
     /**
      * 加密串
@@ -28,6 +30,7 @@ public class ApiResponse {
 
 
     public ApiResponse(Object response) {
+        this.header = new ApiResponseHeader();
         this.response = response;
     }
 }

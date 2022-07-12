@@ -20,7 +20,9 @@ public class SecureUtilTest {
 
         System.out.println(encrypt);
 
+        encrypt = "Y0NesbC5oHfDR60s4jLIF1iiMOGIWocqzGBTgp4UXA1uS3UNYt+rK3/m3kTp5WMPYcLf3bJRpqGJtrQYjBYHzDGS3P2GLZJ0Kb0QCm3c1EU0MEIMVQvSLwt4NfWnpJRhCRO6aKfvU0TPdc8XuOmyUV5ye+pwZGEpuEoUrFOrtJc=";
+
         String s = SecurityUtil.decryptInBase64OutString(encrypt, privateKey);
-        System.out.println(s);
+        System.out.println("55 "+s);
     }
 }

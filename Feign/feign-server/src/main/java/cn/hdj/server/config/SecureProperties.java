@@ -12,8 +12,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class SecureProperties {
 
-    private Sender sender;
-    private Receiver receiver;
+    private Sender sender = new Sender();
+    private Receiver receiver = new Receiver();
 
     @Data
     public class Sender {

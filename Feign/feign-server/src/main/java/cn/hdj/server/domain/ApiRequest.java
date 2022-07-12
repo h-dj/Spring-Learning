@@ -21,7 +21,7 @@ public class ApiRequest {
     /**
      * 加密串
      */
-    private String responseEncrypted;
+    private String requestEncrypted;
     /**
      * 签名
      */
