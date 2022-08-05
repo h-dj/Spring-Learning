@@ -1,0 +1,32 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      username: 'root'
+      password: 'root@01234560'
+      url: 'jdbc:mysql://127.0.0.1:3306/message_push?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8'
+      stat-view-servlet:
+        enabled: true
+        login-password: 123456
+        login-username: root
+        url-pattern: /druid/*
+  mvc:
+    pathmatch:
+      matching-strategy: ant-path-matcher
+  redis:
+    redisson:
+      file: classpath:redisson.yml
+
+
+mybatis-plus:
+  mapper-locations: classpath*:/mappers/**/*.xml  #mapper.xml文件路径
+  configuration:
+    map-underscore-to-camel-case: true #驼峰
+
+
+
+log:
+  path: './logs'
+
+
