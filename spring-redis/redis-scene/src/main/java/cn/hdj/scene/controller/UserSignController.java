@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.nio.charset.StandardCharsets;
 import java.util.BitSet;
 import java.util.Date;
-import java.util.List;
 
 /**
  * @Description: 使用  bitmap 实现签到功能
@@ -42,7 +41,6 @@ public class UserSignController {
         String day = DateUtil.date(date).toString("dd");
 
         String key = String.format("user:sign:%d:%s",userId,yearMonth);
-
         this.redisTemplate
                 .opsForValue()
                 .setBit(key,Math.max(0,Long.parseLong(day)-1),true);
@@ -97,7 +95,7 @@ public class UserSignController {
      *  获取当月连续签到次数
      */
     @GetMapping(value = "/count/continuous")
-    public  List<Long> getContinuousSignCount(Date date){
+    public  int getContinuousSignCount(Date date){
         //当前用户
         Long userId = getUserId();
         //当前签到年月
@@ -112,9 +110,7 @@ public class UserSignController {
                 return fromByteArrayReverse(redisConnection.get(key.getBytes(StandardCharsets.UTF_8)));
             }
         });
-
-        //TODO  还没完成
-        return null;
+        return bitSet.cardinality();
 
     }
 

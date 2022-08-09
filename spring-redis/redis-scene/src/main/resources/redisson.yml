@@ -1,38 +1,19 @@
-sentinelServersConfig:
-  #空闲链接超时
+singleServerConfig:
   idleConnectionTimeout: 10000
-  #连接超时
   connectTimeout: 10000
-  # 超时
   timeout: 3000
-  # 重试次数
   retryAttempts: 3
-  # 重试间隔
   retryInterval: 1500
-  # 失败重连间隔
-  failedSlaveReconnectionInterval: 3000
-  # 失败检查
-  failedSlaveCheckInterval: 60000
-  # 密码
-  password: null
+  password: 'redis@01234560'
   subscriptionsPerConnection: 5
   clientName: null
-  # 负载均衡
-  loadBalancer: !<org.redisson.connection.balancer.RoundRobinLoadBalancer> {}
+  address: "redis://127.0.0.1:6379"
   subscriptionConnectionMinimumIdleSize: 1
   subscriptionConnectionPoolSize: 50
-  slaveConnectionMinimumIdleSize: 24
-  slaveConnectionPoolSize: 64
-  masterConnectionMinimumIdleSize: 24
-  masterConnectionPoolSize: 64
-  readMode: "SLAVE"
-  subscriptionMode: "SLAVE"
-  sentinelAddresses:
-    - "redis://127.0.0.1:26383"
-    - "redis://127.0.0.1:26382"
-    - "redis://127.0.0.1:26381"
-  masterName: "mymaster"
+  connectionMinimumIdleSize: 24
+  connectionPoolSize: 64
   database: 0
+  dnsMonitoringInterval: 5000
 threads: 16
 nettyThreads: 32
 codec: !<org.redisson.codec.JsonJacksonCodec> {}

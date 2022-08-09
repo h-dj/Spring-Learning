@@ -5,6 +5,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.extern.slf4j.Slf4j;
+import org.redisson.Redisson;
+import org.redisson.api.RedissonClient;
+import org.redisson.config.Config;
+import org.redisson.spring.data.connection.RedissonConnectionFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
@@ -12,6 +17,7 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.CacheErrorHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -21,6 +27,7 @@ import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.io.IOException;
 import java.time.Duration;
 
 
@@ -35,8 +42,19 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
 
 
+    @Bean
+    public RedissonConnectionFactory redissonConnectionFactory(RedissonClient redisson) {
+        return new RedissonConnectionFactory(redisson);
+    }
 
-    private RedisSerializer serializer(){
+    @Bean(destroyMethod = "shutdown")
+    public RedissonClient redisson(@Value("classpath:/redisson.yml") Resource configFile) throws IOException {
+        Config config = Config.fromYAML(configFile.getInputStream());
+        return Redisson.create(config);
+    }
+
+
+    private RedisSerializer serializer() {
         Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<Object>(Object.class);
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -51,6 +69,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         serializer.setObjectMapper(objectMapper);
         return serializer;
     }
+
     /**
      * 如使用注解的话需要配置cacheManager
      *
@@ -96,7 +115,6 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
-
 
 
     @Bean

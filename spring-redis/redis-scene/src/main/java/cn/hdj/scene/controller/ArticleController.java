@@ -1,7 +1,5 @@
 package cn.hdj.scene.controller;
 
-import cn.hutool.bloomfilter.BitMapBloomFilter;
-import cn.hutool.bloomfilter.bitMap.BitMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +19,7 @@ public class ArticleController {
 
 
     @Autowired
-    private RedisTemplate<String,Object> redisTemplate;
+    private RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 点赞
