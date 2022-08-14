@@ -17,6 +17,8 @@ public class MessageSendRequest {
      * 接收人
      */
     private List<Receiver> receiverAddressList;
+    //消息类型编码
+    private String messageTypeCode;
     //发送参数
     private Map<String, String> args;
     //是否批量发送
