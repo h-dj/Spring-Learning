@@ -5,7 +5,7 @@ xxl:
     #accessToken: ''
     admin:
       # 访问地址
-      addresses: http://127.0.0.1:7070/xxl-job-admin
+      addresses: http://127.0.0.1:8080/xxl-job-admin
     executor:
       #address: ''
       appname: xxl-job-executor-sample

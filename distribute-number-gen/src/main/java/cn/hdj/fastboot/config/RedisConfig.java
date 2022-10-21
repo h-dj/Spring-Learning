@@ -1,5 +1,6 @@
-package cn.hdj.config;
+package cn.hdj.fastboot.config;
 
+import cn.hdj.fastboot.modules.test.domain.ICacheEntity;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -15,10 +16,7 @@ import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
-import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.*;
 
 import java.time.Duration;
 
@@ -33,8 +31,9 @@ import java.time.Duration;
 public class RedisConfig extends CachingConfigurerSupport {
 
 
-    private RedisSerializer serializer() {
-        Jackson2JsonRedisSerializer<Object> serializer = new Jackson2JsonRedisSerializer<>(Object.class);
+
+    private RedisSerializer serializer(){
+        Jackson2JsonRedisSerializer serializer = new Jackson2JsonRedisSerializer<>(ICacheEntity.class);
         ObjectMapper objectMapper = new ObjectMapper();
 
         // 将类型序列化到属性json字符串中
@@ -47,7 +46,6 @@ public class RedisConfig extends CachingConfigurerSupport {
         serializer.setObjectMapper(objectMapper);
         return serializer;
     }
-
     /**
      * 如使用注解的话需要配置cacheManager
      *
@@ -58,6 +56,7 @@ public class RedisConfig extends CachingConfigurerSupport {
 
         //覆盖默认的序列化
         RedisSerializer serializer = serializer();
+
         //默认配置
         RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration
                 .defaultCacheConfig()
@@ -70,20 +69,13 @@ public class RedisConfig extends CachingConfigurerSupport {
     }
 
 
-    /**
-     * Redisson 有许多接口还没实现，暂时不使用  RedisTemplate
-     *
-     * @param redisConnectionFactory
-     * @return
-     */
-//    @Bean
+    @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
 
         //覆盖默认的序列化
         RedisSerializer serializer = serializer();
         StringRedisSerializer stringRedisSerializer = StringRedisSerializer.UTF_8;
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<String, Object>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
         redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(stringRedisSerializer);
         redisTemplate.setHashKeySerializer(stringRedisSerializer);
@@ -92,6 +84,7 @@ public class RedisConfig extends CachingConfigurerSupport {
         redisTemplate.setValueSerializer(serializer);
 
         redisTemplate.setDefaultSerializer(serializer);
+        redisTemplate.afterPropertiesSet();
         return redisTemplate;
     }
 

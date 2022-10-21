@@ -3,7 +3,6 @@ package cn.hdj.springbootaopdemo.service.impl;
 import cn.hdj.springbootaopdemo.entity.UserDO;
 import cn.hdj.springbootaopdemo.service.UserService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +32,7 @@ public class UserServiceImpl implements UserService {
     }
 
 
-    @Transactional()
+
     @Override
     public void saveUser(UserDO user) {
         try {

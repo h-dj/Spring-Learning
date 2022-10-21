@@ -1,13 +1,13 @@
-package cn.hdj.xxljob;
+package cn.hdj.fastboot;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class DemoApplication {
+public class FastBootApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(DemoApplication.class, args);
+		SpringApplication.run(FastBootApplication.class, args);
 	}
 
 }
