@@ -5,12 +5,8 @@ import cn.hdj.fastboot.common.api.ResultVO;
 import cn.hdj.fastboot.modules.test.entity.CrmNumberConfig;
 import cn.hdj.fastboot.modules.test.service.ICrmNumberConfigService;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.stereotype.Controller;
+import lombok.EqualsAndHashCode;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,21 +18,22 @@ import java.util.List;
  * @author huangjiajian
  * @since 2022-10-21
  */
-@Controller
+@RestController
 @RequestMapping("/test/crmNumberConfig")
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class CrmNumberConfigController {
 
     private final ICrmNumberConfigService crmNumberConfigService;
 
 
-    @PostMapping(name = "/addNumConfig")
+    @PostMapping(value = "/addNumConfig")
     public ResultVO addNumConfig(@RequestBody CrmNumberConfig config) {
         this.crmNumberConfigService.addNumConfig(config);
         return ResultVO.successJson("ok");
     }
 
-    @GetMapping(name = "/list")
+    @GetMapping(value = "/list")
     public ResultVO list() {
         List<CrmNumberConfig> list = this.crmNumberConfigService.list();
         return ResultVO.successJson(list);

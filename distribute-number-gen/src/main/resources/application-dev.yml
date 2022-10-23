@@ -4,8 +4,8 @@ spring:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
       username: 'root'
-      password: '123456'
-      url: 'jdbc:mysql://127.0.0.1:33060/distribute_id?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8'
+      password: 'root@01234560'
+      url: 'jdbc:mysql://127.0.0.1:3306/distribute_id?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=GMT%2B8'
       stat-view-servlet:
         enabled: true
         login-password: 123456

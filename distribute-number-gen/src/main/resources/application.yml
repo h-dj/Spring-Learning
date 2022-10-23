@@ -1,5 +1,16 @@
 server:
   port: 8080
+  tomcat:
+    # 等待队列长度，默认100。
+    accept-count: 1000
+    # 最大连接数 ，默认8192
+    max-connections: 8192
+    max-keep-alive-requests: 100
+    threads:
+      # 最大工作线程数，默认200。（4核8g内存，线程数经验值800，操作系统做线程之间的切换调度是有系统开销的，所以不是越多越好。）
+      max: 800
+      # 最小工作空闲线程数，默认10。（适当增大一些，以便应对突然增长的访问量）
+      min-spare: 100
 spring:
   profiles:
     active: 'dev'

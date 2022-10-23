@@ -18,4 +18,6 @@ public interface ICrmNumberSettingService extends IService<CrmNumberSetting> {
     void addNumSetting(CrmNumberSetting config);
 
     String generate(Map<String, Object> map, String code);
+
+    long updateCAS(CrmNumberSetting setting);
 }
