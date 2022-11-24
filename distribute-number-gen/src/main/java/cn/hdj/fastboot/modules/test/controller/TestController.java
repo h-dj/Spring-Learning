@@ -1,9 +1,11 @@
 package cn.hdj.fastboot.modules.test.controller;
 
+import cn.hdj.fastboot.modules.test.service.TestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,6 +19,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(value = "test")
 public class TestController {
+
+    @Autowired
+    private TestService testService;
 
     @Operation(summary = "添加", description = "添加描述")
     @GetMapping("/add")

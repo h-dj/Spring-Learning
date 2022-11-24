@@ -2,14 +2,17 @@ server:
   port: 8081
 xxl:
   job:
-    #accessToken: ''
     admin:
       # 访问地址
       addresses: http://127.0.0.1:8080/xxl-job-admin
+      username: admin
+      password: 123456
     executor:
-      #address: ''
-      appname: xxl-job-executor-sample
-      #ip: ''
+      accessToken: 'default_token'
+      address:
+      appname: 'spring-xxl-job'
+      ip: 127.0.0.1
       #logpath: /data/applogs/xxl-job/jobhandler
       #logretentiondays: 30
       port: 9999
+      title: 'aa'

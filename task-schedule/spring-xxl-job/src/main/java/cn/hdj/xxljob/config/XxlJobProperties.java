@@ -1,6 +1,7 @@
 package cn.hdj.xxljob.config;
 
 import lombok.Data;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -12,16 +13,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class XxlJobProperties {
 
+    public static final String LOGIN_IDENTITY_KEY = "XXL_JOB_LOGIN_IDENTITY";
+
     private XxlJobProperties.Admin admin;
     private XxlJobProperties.Executor executor;
 
     @Data
     public static class Admin {
         private String addresses;
+        private String username;
+        private String password;
     }
 
     @Data
     public static class Executor {
+        private String title;
         private String accessToken;
         private String appname;
         private String address;

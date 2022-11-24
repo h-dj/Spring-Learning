@@ -4,7 +4,7 @@
   "avatar": "",
   "version": "4.1.1",
   "createdTime": "2022-6-25 16:37:12",
-  "updatedTime": "2022-6-26 02:23:48",
+  "updatedTime": "2022-11-16 15:13:06",
   "dbConns": [],
   "profile": {
     "default": {
@@ -474,7 +474,7 @@
         "hideInGraph": true
       }
     ],
-    "menuWidth": "260px"
+    "menuWidth": "334px"
   },
   "entities": [
     {
@@ -3419,7 +3419,38 @@
       "id": "9E7C9788-B805-4C7D-8531-FD1D9DC79B05"
     }
   ],
-  "viewGroups": [],
+  "viewGroups": [
+    {
+      "defKey": "youlai",
+      "defName": "有来开源项目权限",
+      "refEntities": [
+        "81831240-1C6D-4E1B-8226-7CC679F08C4F",
+        "44F9F0D1-F732-42CF-8991-A5C67005A861",
+        "0385AF23-8222-460D-B620-F61DA181ECA5",
+        "DE89446C-E976-4161-8839-87655C4DC5F6",
+        "975345C7-CBB1-4A06-9597-1B1346908154",
+        "49069BB1-83CE-4B18-91B2-A42043FCBD2A",
+        "DEBB240A-6378-4FB8-B6B9-2599167A8328",
+        "16E3A7D7-FA02-4EC9-B441-0F44E1C5FA20",
+        "9E4795CE-50DD-407E-8A4B-4225FE7EAD21",
+        "6F1E06A4-5731-4A92-BCDE-4DF2FFF3D443",
+        "FC7952CB-9071-4C68-9B38-7D1277639FC2"
+      ],
+      "refViews": [],
+      "refDiagrams": [],
+      "refDicts": [],
+      "id": "326FEEA8-C480-4640-8465-0EF3B6B93EDE"
+    },
+    {
+      "defKey": "ruoyi",
+      "defName": "若依开源项目权限",
+      "refEntities": [],
+      "refViews": [],
+      "refDiagrams": [],
+      "refDicts": [],
+      "id": "184C1515-8659-4D9B-A139-66DD20201B19"
+    }
+  ],
   "dataTypeMapping": {
     "referURL": "",
     "mappings": [
@@ -4114,11 +4145,23 @@
   "dbConn": [
     {
       "defKey": "208898AD-CEFF-486F-9592-FAC03F276944",
-      "defName": "mysql",
+      "defName": "rbac",
       "type": "29D1CE08-4C35-4D2D-AAA9-23D93305B52E",
       "properties": {
         "driver_class_name": "com.mysql.cj.jdbc.Driver",
         "url": "jdbc:mysql://127.0.0.1:3306/rbac?characterEncoding=UTF-8&useSSL=false&useUnicode=true&serverTimezone=UTC",
+        "password": "root@01234560",
+        "username": "root",
+        "customer_driver": "/home/h-dj/.m2/repository/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar"
+      }
+    },
+    {
+      "defKey": "A811CE2E-A670-4F6D-9AB1-946D271CA1AB",
+      "defName": "若依",
+      "type": "29D1CE08-4C35-4D2D-AAA9-23D93305B52E",
+      "properties": {
+        "driver_class_name": "com.mysql.cj.jdbc.Driver",
+        "url": "jdbc:mysql://127.0.0.1:3306/ry-vue?characterEncoding=UTF-8&useSSL=false&useUnicode=true&serverTimezone=UTC",
         "password": "root@01234560",
         "username": "root",
         "customer_driver": "/home/h-dj/.m2/repository/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar"
