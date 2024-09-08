@@ -1,7 +1,6 @@
 package cn.hdj.scene.ratelimiter;
 
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 
 public class SlidingWindowRateLimiter {
@@ -28,7 +27,6 @@ public class SlidingWindowRateLimiter {
     /**
      * 限流
      *
-     * @return
      */
     public synchronized boolean tryAcquire() {
         //获取当前时间

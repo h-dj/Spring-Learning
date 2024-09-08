@@ -40,11 +40,6 @@ public class FixedWindowRateLimiter {
         }
 
         // 如果请求数还在限制内，则允许请求
-        if (requestCount.incrementAndGet() <= maxRequests) {
-            return true;
-        }
-
-        // 超过请求限制，拒绝请求
-        return false;
+        return requestCount.incrementAndGet() <= maxRequests;
     }
 }
