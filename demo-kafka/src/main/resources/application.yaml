@@ -1,0 +1,11 @@
+
+
+
+spring:
+  application:
+    name: demo-kafka
+  kafka:
+    bootstrap-servers:
+      - 192.168.56.50:32767
+      - 192.168.56.50:32768
+      - 192.168.56.50:32769
