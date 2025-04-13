@@ -9,3 +9,17 @@ spring:
       - 192.168.56.50:32767
       - 192.168.56.50:32768
       - 192.168.56.50:32769
+
+#Apollo 配置
+app:
+  id: kafka-demo
+apollo:
+  read-timeout: 5000
+  connect-timeout: 5000
+  meta: http://192.168.56.70:8080          #DEV环境配置中心地址
+  autoUpdateInjectedSpringProperties: true   #是否开启 Spring 参数自动更新
+  bootstrap:
+    enabled: true                            #是否开启 Apollo
+    namespaces: application,TEST1.common
+    eagerLoad:
+      enabled: true                         #将 Apollo 加载提到初始化日志系统之前
