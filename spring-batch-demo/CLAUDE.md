@@ -1,37 +1,32 @@
 # CLAUDE.md — spring-batch-demo
 
-Behavioral guidelines for this Spring Batch demo project. Merge with project-specific sections below.
+Behavioral guidelines for this Spring Batch demo project.
 
-**Tradeoff note:** These prioritize caution over speed; use judgment for trivial fixes.
+**Tradeoff note:** Prioritizes caution over speed; use judgment for trivial fixes.
 
 ---
 
 ## 1. Think Before Coding
 
-- State assumptions explicitly before writing code; ask if uncertain.
+- State assumptions explicitly; ask if uncertain.
 - Present multiple interpretations when requirements are ambiguous.
-- Suggest simpler approaches and push back when the approach feels overcomplicated.
-- Stop if confused, name the confusion, and ask.
+- Push back on overcomplicated approaches.
 
 ## 2. Simplicity First
 
 - No features beyond what was asked. No abstractions for single-use code.
-- No unrequested flexibility or configurability.
-- No error handling for impossible scenarios.
+- No unrequested flexibility. No error handling for impossible scenarios.
 - "Would a senior engineer say this is overcomplicated?" — If yes, rewrite.
 
 ## 3. Surgical Changes
 
 - Touch only what the task requires. Match existing style.
-- Don't improve adjacent code, comments, or formatting.
-- Remove what your changes made unused (imports, variables).
-- Don't remove pre-existing dead code unless asked.
+- Remove what your changes made unused. Don't clean up pre-existing dead code.
 
 ## 4. Goal-Driven Execution
 
 - Transform tasks into verifiable goals: "Write tests, then make them pass."
 - For multi-step tasks, state a plan with numbered steps and verification checks.
-- Strong criteria enable independent work; weak criteria cause constant re-clarification.
 
 ---
 
@@ -39,38 +34,42 @@ Behavioral guidelines for this Spring Batch demo project. Merge with project-spe
 
 ### Tech Stack
 
-- Java 17, Spring Boot 3.5.14, Spring Batch 5
-- Spring Data JPA + H2 Database + Liquibase
-- MapStruct 1.6.3, Lombok
-- JUnit 5, Spring Batch Test, Testcontainers
+Java 17, Spring Boot 3.5.14, Spring Batch 5, Spring Data JPA, H2, Liquibase, MapStruct 1.6.3, Lombok, JUnit 5.
 
-### Batch Configuration
+### Batch Conventions
 
-- `spring.batch.job.enabled=false` — Jobs do NOT auto-start on boot
-- `spring.batch.jdbc.initialize-schema=never` — Batch metadata tables managed by Liquibase
-- `JobLauncher` uses `TaskExecutorJobLauncher` for async execution
-- Step uses fault-tolerant + skip strategy for parse exceptions
+- Jobs/Steps: explicit name in builder matches bean method name (`JobBuilder("fileJob", repo)`).
+- Step-scoped beans (`@StepScope`) for late-binding `#{jobParameters['key']}`.
+- Chunk-oriented steps with fault tolerance: `.faultTolerant().skip(FlatFileParseException.class).skipLimit(Integer.MAX_VALUE)`.
+- `@Configuration` classes — no `@EnableBatchProcessing` (auto-configured by Spring Boot).
+- `spring.batch.job.enabled=false` — jobs do NOT auto-start on boot.
+- `spring.batch.jdbc.initialize-schema=never` — Batch metadata tables managed by Liquibase.
 
-### Testing Rules
+### Coding Conventions
 
-- **Unit tests**: Pure JUnit 5, no Spring context. Directly instantiate target class.
-- **Integration tests**: `@SpringBatchTest` + `@SpringBootTest`, H2 in-memory database.
-- **MapStruct Mapper接口**：只定义接口，实现由注解处理器自动生成，**不写单元测试**。
-- Test data files go under `src/test/resources/data/`.
+- Field names: inline in `DelimitedLineTokenizer.setNames(...)` — do NOT extract to constants.
+- SQL: externalize to `src/main/resources/sql/{fileType}-insert.sql`, load via `ResourceLoader` with `@StepScope`.
+- Use Lombok `@Data` for DTOs. MapStruct `@Mapper(componentModel = "spring")` for DTO mapping.
+- Use `JdbcBatchItemWriter` with `BeanPropertyItemSqlParameterSourceProvider` for DB writes.
+- Use `FieldSetMapper<Student>` (custom implementation) — not `BeanWrapperFieldSetMapper`.
 
-### Development Rules
+### Testing Conventions
 
-- Use Lombok `@Data` for DTO classes.
-- MapStruct `@Mapper(componentModel = "spring")` for DTO mapping.
-- Test `@DisplayName` in Chinese.
-- Configuration classes are plain `@Configuration` — no `@EnableBatchProcessing`.
-- Job parameters injected via `@Value("#{jobParameters['key']}")`.
+- **Unit tests**: Pure JUnit 5. No Spring context. Directly `new` the target class.
+- **Integration tests**: `@SpringBatchTest` + `@SpringBootTest`, H2 in-memory, `JobLauncherTestUtils`.
+- **Controller tests**: `@SpringBootTest` + `@AutoConfigureMockMvc` + `@MockitoBean JobLauncher`.
+- No unit tests for: Entity classes, DTOs, MapStruct-generated implementations, StepExecutionListener (logging only).
+- Test data files: `src/test/resources/data/`. Test `@DisplayName` in Chinese.
+
+### Workflow
+
+- After each implementation, update this CLAUDE.md with any new conventions or rules discovered during the work.
 
 ### Common Commands
 
 ```bash
-./mvnw test                        # All tests
-./mvnw test -Dtest=StudentProcessorTest  # Single test
-./mvnw spring-boot:run             # Start app
-./mvnw clean package -DskipTests   # Package
+./mvnw test                           # All tests
+./mvnw test -Dtest=StudentProcessorTest   # Single test class
+./mvnw spring-boot:run                # Start app
+./mvnw clean package -DskipTests      # Package
 ```

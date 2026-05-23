@@ -22,10 +22,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Configuration
 public class FileJobConfig {
@@ -78,14 +81,20 @@ public class FileJobConfig {
     }
 
     @Bean
-    public JdbcBatchItemWriter<Student> studentWriter(DataSource dataSource) {
+    @StepScope
+    public JdbcBatchItemWriter<Student> studentWriter(
+            DataSource dataSource,
+            @Value("#{jobParameters['fileType']}") String fileType,
+            ResourceLoader resourceLoader) throws IOException {
+
+        var resource = resourceLoader.getResource("classpath:sql/" + fileType + "-insert.sql");
+        String sql = new String(resource.getInputStream().readAllBytes(), StandardCharsets.UTF_8).trim();
+
         JdbcBatchItemWriter<Student> writer = new JdbcBatchItemWriter<>();
         writer.setDataSource(dataSource);
-        writer.setSql("""
-                INSERT INTO t_student (student_no, name, gender, birth_date, phone, email, class_name, enrollment_year, status)
-                VALUES (:studentNo, :name, :gender, :birthDate, :phone, :email, :className, :enrollmentYear, :status)
-                """);
+        writer.setSql(sql);
         writer.setItemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>());
+        writer.setAssertUpdates(false);
         return writer;
     }
 
