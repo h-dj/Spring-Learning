@@ -1,0 +1,7 @@
+student_no|name|gender|birth_date|phone|email|class_name|enrollment_year|status
+TEST001|测试学生A|M|2000-01-15|13800138000|testa@email.com|测试一班|2023|ACTIVE
+TEST002|测试学生B|F|2001-03-20|13900139000|testb@email.com|测试一班|2023|active
+TEST003|测试学生C|m|2000-07-10|13700137000|testc@email.com|测试一班|2023|Active
+TEST004||M|2001-11-05|13600136000|testd@email.com|测试一班|2023|ACTIVE
+TEST005|测试学生E|X|2000-05-25|13500135000|teste@email.com|测试一班|2023|ACTIVE
+TEST006|测试学生F|F|2001-09-15|invalid|testf@email.com|测试一班|2023|ACTIVE

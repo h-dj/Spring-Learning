@@ -1,20 +1,5 @@
 databaseChangeLog:
-  - changeSet:
-      id: 1
-      author: reid
-      changes:
-        - createTable:
-            tableName: demo_table
-            columns:
-              - column:
-                  name: id
-                  type: BIGINT
-                  autoIncrement: true
-                  constraints:
-                    primaryKey: true
-                    nullable: false
-              - column:
-                  name: name
-                  type: VARCHAR(255)
-                  constraints:
-                    nullable: false
+  - include:
+      file: db/changelog/changelog-001-create-t-student.sql
+  - include:
+      file: db/changelog/changelog-002-create-batch-tables.sql
