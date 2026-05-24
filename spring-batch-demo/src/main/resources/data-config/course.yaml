@@ -1,0 +1,63 @@
+table: t_course
+delimiter: "|"
+header: true
+rowCount: 100
+fields:
+  - name: course_code
+    type: STRING
+    generator:
+      pattern: "CS{auto_increment:3d}"
+
+  - name: course_name
+    type: STRING
+    generator:
+      values: ["计算机网络", "数据结构与算法", "操作系统原理", "数据库系统概论",
+               "编译原理", "软件工程", "人工智能导论", "计算机组成原理",
+               "面向对象程序设计", "离散数学", "线性代数", "概率论与数理统计",
+               "大学英语", "马克思主义原理", "体育"]
+
+  - name: credits
+    type: INTEGER
+    generator:
+      range: [1, 6]
+
+  - name: course_type
+    type: STRING
+    generator:
+      values: ["REQUIRED", "ELECTIVE", "PUBLIC"]
+
+  - name: department
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["计算机学院", "数学学院", "外国语学院", "马克思主义学院", "体育学院"]
+
+  - name: teacher
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["张教授", "李教授", "王教授", "赵教授", "陈教授", "刘教授", "杨教授"]
+
+  - name: max_students
+    type: INTEGER
+    null_probability: 0.1
+    generator:
+      range: [30, 120]
+
+  - name: hours
+    type: INTEGER
+    null_probability: 0.1
+    generator:
+      range: [16, 80]
+
+  - name: status
+    type: STRING
+    generator:
+      fixed: "ACTIVE"
+
+  - name: description
+    type: STRING
+    null_probability: 0.2
+    generator:
+      values: ["专业基础课程", "专业核心课程", "通识教育课程", "学科前沿课程",
+               "实践教学课程", "", ""]

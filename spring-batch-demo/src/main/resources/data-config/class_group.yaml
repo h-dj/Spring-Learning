@@ -1,0 +1,66 @@
+table: t_class_group
+delimiter: "|"
+header: true
+rowCount: 100
+fields:
+  - name: class_no
+    type: STRING
+    generator:
+      pattern: "CS{auto_increment:3d}"
+
+  - name: class_name
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["计算机科学一班", "软件工程二班", "物理学一班", "数学一班", "英语二班", "化学一班", "生物技术一班"]
+
+  - name: grade
+    type: INTEGER
+    generator:
+      range: [1, 4]
+
+  - name: major
+    type: STRING
+    null_probability: 0.05
+    generator:
+      values: ["计算机科学与技术", "软件工程", "物理学", "数学", "英语", "化学", "生物技术"]
+
+  - name: department
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["计算机学院", "物理学院", "数学学院", "外国语学院", "化学学院", "生命科学学院"]
+
+  - name: head_teacher
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["张教授", "李教授", "王教授", "赵教授", "刘教授", "陈教授"]
+
+  - name: student_count
+    type: INTEGER
+    null_probability: 0.05
+    generator:
+      range: [25, 50]
+
+  - name: classroom
+    type: STRING
+    null_probability: 0.1
+    generator:
+      pattern: "[A-C]{random:1d}{auto_increment:2d}"
+
+  - name: building
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["主教学楼", "物理楼", "数学楼", "外语楼", "化学楼", "生命科学楼"]
+
+  - name: enrollment_year
+    type: INTEGER
+    generator:
+      range: [2022, 2025]
+
+  - name: status
+    type: STRING
+    generator:
+      fixed: "ACTIVE"

@@ -1,0 +1,7 @@
+student_no|course_code|score|exam_date|exam_type|credit_points|rank|passed|comments|graded_by
+TEST001|CS101|85.5|2024-01-15|FINAL|3.0|10|Y|Good work|Dr. Smith
+TEST002|CS102|92.0|2024-01-20|MIDTERM|4.0|5|Y|Excellent|Prof. Johnson
+TEST003|MATH201|59.5|2024-02-10|QUIZ|2.0|30|N|Needs improvement|Dr. Lee
+TEST004||59.5|2024-01-15|FINAL|3.0|15|Y|Good work|Dr. Smith
+TEST005|CS102|101.0|2024-01-20|MIDTERM|4.0||Y|Excellent|Prof. Johnson
+TEST006|MATH201|59.5|2024-02-10|invalid_type|2.0|30|N|Needs improvement|Dr. Lee

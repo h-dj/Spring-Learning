@@ -1,6 +1,5 @@
 package cn.reid.springbatchdemo.monitor;
 
-import cn.reid.springbatchdemo.entity.Student;
 import org.springframework.batch.core.SkipListener;
 import org.springframework.stereotype.Component;
 
@@ -10,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
-public class SkipCollectorListener implements SkipListener<Student, Student> {
+public class SkipCollectorListener implements SkipListener<Object, Object> {
 
     private final ConcurrentHashMap<String, AtomicInteger> skipReasons = new ConcurrentHashMap<>();
     private volatile boolean enabled = false;
@@ -49,12 +48,12 @@ public class SkipCollectorListener implements SkipListener<Student, Student> {
     }
 
     @Override
-    public void onSkipInProcess(Student item, Throwable t) {
+    public void onSkipInProcess(Object item, Throwable t) {
         record(formatReason(t));
     }
 
     @Override
-    public void onSkipInWrite(Student item, Throwable t) {
+    public void onSkipInWrite(Object item, Throwable t) {
         record(formatReason(t));
     }
 

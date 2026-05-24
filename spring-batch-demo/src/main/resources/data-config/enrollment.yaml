@@ -1,0 +1,63 @@
+table: t_enrollment
+delimiter: "|"
+header: true
+rowCount: 100
+fields:
+  - name: student_no
+    type: STRING
+    generator:
+      pattern: "TEST{auto_increment:3d}"
+
+  - name: course_code
+    type: STRING
+    generator:
+      values: ["CS101", "CS102", "MATH201", "PHY101", "ENG101", "CHM101", "BIO101"]
+
+  - name: semester
+    type: STRING
+    generator:
+      values: ["2024-S1", "2024-S2", "2023-S1", "2023-S2"]
+
+  - name: enrollment_date
+    type: DATE
+    null_probability: 0.05
+    generator:
+      range: ["2024-01-01", "2024-06-30"]
+
+  - name: status
+    type: STRING
+    generator:
+      values: ["ENROLLED", "ENROLLED", "ENROLLED", "DROPPED", "COMPLETED"]
+
+  - name: final_grade
+    type: STRING
+    null_probability: 0.2
+    generator:
+      values: ["A", "B", "C", "D", "F"]
+
+  - name: attendance_rate
+    type: DECIMAL
+    null_probability: 0.05
+    generator:
+      range: [0.00, 100.00]
+
+  - name: total_attendance
+    type: INTEGER
+    generator:
+      range: [10, 30]
+
+  - name: actual_attendance
+    type: INTEGER
+    generator:
+      range: [0, 30]
+
+  - name: dropped_reason
+    type: STRING
+    null_probability: 0.9
+    generator:
+      values: ["个人原因退课", "时间冲突", "课程难度过大", "已修读过该课程"]
+
+  - name: created_at
+    type: DATETIME
+    generator:
+      template: "{enrollment_date}T10:00:00"

@@ -1,0 +1,7 @@
+teacher_no|name|gender|title|degree|department|phone|email|hire_date|salary_level|is_advisor|max_courses|status
+T001|张教授|M|PROFESSOR|博士|计算机系|13800138001|zhang@edu.cn|2010-09-01|5|Y|5|ACTIVE
+T002|李副教授|F|associate|硕士|数学系|13900139002|li@edu.cn|2012-03-15|4|Y|4|active
+T003|王讲师|M|lecturer|学士|英语系|13700137003|wang@edu.cn|2015-07-01|3|N|3|Active
+T004||M|ASSISTANT|硕士|物理系|13600136004|zhao@edu.cn|2018-01-10|2|N|2|ACTIVE
+T005|孙教师|F|INVALID_TITLE|博士|化学系|13500135005|sun@edu.cn|2016-05-20|4|Y|4|ACTIVE
+T006|周教师|M|PROFESSOR|博士|生物系|invalid|zhou@edu.cn|2014-11-01|5|N|3|ACTIVE

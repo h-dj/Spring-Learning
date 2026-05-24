@@ -1,6 +1,5 @@
 package cn.reid.springbatchdemo.monitor;
 
-import cn.reid.springbatchdemo.entity.Student;
 import org.springframework.batch.core.ItemProcessListener;
 import org.springframework.batch.core.ItemReadListener;
 import org.springframework.batch.core.ItemWriteListener;
@@ -11,9 +10,9 @@ import java.util.concurrent.atomic.AtomicLong;
 
 @Component
 public class ItemTimingListener implements
-        ItemReadListener<Student>,
-        ItemProcessListener<Student, Student>,
-        ItemWriteListener<Student> {
+        ItemReadListener<Object>,
+        ItemProcessListener<Object, Object>,
+        ItemWriteListener<Object> {
 
     private final ThreadLocal<Long> readStart = new ThreadLocal<>();
     private final ThreadLocal<Long> processStart = new ThreadLocal<>();
@@ -37,7 +36,7 @@ public class ItemTimingListener implements
     }
 
     @Override
-    public void afterRead(Student item) {
+    public void afterRead(Object item) {
         Long start = readStart.get();
         readStart.remove();
         if (start != null) {
@@ -53,12 +52,12 @@ public class ItemTimingListener implements
     // ========== ItemProcessListener ==========
 
     @Override
-    public void beforeProcess(Student item) {
+    public void beforeProcess(Object item) {
         processStart.set(System.nanoTime());
     }
 
     @Override
-    public void afterProcess(Student item, Student result) {
+    public void afterProcess(Object item, Object result) {
         Long start = processStart.get();
         processStart.remove();
         if (start != null) {
@@ -67,19 +66,19 @@ public class ItemTimingListener implements
     }
 
     @Override
-    public void onProcessError(Student item, Exception ex) {
+    public void onProcessError(Object item, Exception ex) {
         processStart.remove();
     }
 
     // ========== ItemWriteListener ==========
 
     @Override
-    public void beforeWrite(Chunk<? extends Student> items) {
+    public void beforeWrite(Chunk<?> items) {
         writeStart.set(System.nanoTime());
     }
 
     @Override
-    public void afterWrite(Chunk<? extends Student> items) {
+    public void afterWrite(Chunk<?> items) {
         Long start = writeStart.get();
         writeStart.remove();
         if (start != null) {
@@ -88,7 +87,7 @@ public class ItemTimingListener implements
     }
 
     @Override
-    public void onWriteError(Exception ex, Chunk<? extends Student> items) {
+    public void onWriteError(Exception ex, Chunk<?> items) {
         writeStart.remove();
     }
 }

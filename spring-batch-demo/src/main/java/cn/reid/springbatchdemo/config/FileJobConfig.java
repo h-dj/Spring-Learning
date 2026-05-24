@@ -106,6 +106,21 @@ public class FileJobConfig {
     }
 
     @Bean
+    public FileTypeDecider fileTypeDecider() {
+        return new FileTypeDecider();
+    }
+
+    @Bean
+    public Step failStep(JobRepository jobRepository, PlatformTransactionManager transactionManager) {
+        return new StepBuilder("failStep", jobRepository)
+                .tasklet((contribution, chunkContext) -> {
+                    String fileType = (String) chunkContext.getStepContext().getJobParameters().get("fileType");
+                    throw new IllegalArgumentException("Unsupported fileType: " + fileType);
+                }, transactionManager)
+                .build();
+    }
+
+    @Bean
     public Step fileStep(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
@@ -123,9 +138,9 @@ public class FileJobConfig {
                 .processor(studentProcessor)
                 .writer(studentWriter)
                 .listener(listener)
-                .listener((ItemReadListener<Student>) timingListener)
-                .listener((ItemProcessListener<Student, Student>) timingListener)
-                .listener((ItemWriteListener<Student>) timingListener)
+                .listener((ItemReadListener<Object>) timingListener)
+                .listener((ItemProcessListener<Object, Object>) timingListener)
+                .listener((ItemWriteListener<Object>) timingListener)
                 .listener(skipListener)
                 .listener(new ChunkMetricsChunkListener(timingListener, skipListener, listener, monitoringFacade))
                 .faultTolerant()
@@ -135,9 +150,17 @@ public class FileJobConfig {
     }
 
     @Bean
-    public Job fileJob(JobRepository jobRepository, Step fileStep) {
+    public Job fileJob(JobRepository jobRepository, Step fileStep, Step enrollmentStep, Step courseStep, Step classGroupStep, Step teacherStep, Step examScoreStep, Step failStep, FileTypeDecider fileTypeDecider) {
         return new JobBuilder("fileJob", jobRepository)
-                .start(fileStep)
+                .start(fileTypeDecider)
+                    .on("STUDENT").to(fileStep)
+                    .from(fileTypeDecider).on("ENROLLMENT").to(enrollmentStep)
+                    .from(fileTypeDecider).on("COURSE").to(courseStep)
+                    .from(fileTypeDecider).on("CLASS_GROUP").to(classGroupStep)
+                    .from(fileTypeDecider).on("EXAM_SCORE").to(examScoreStep)
+                    .from(fileTypeDecider).on("TEACHER").to(teacherStep)
+                    .from(fileTypeDecider).on("UNKNOWN").to(failStep)
+                .end()
                 .build();
     }
 }

@@ -1,0 +1,72 @@
+table: t_teacher
+delimiter: "|"
+header: true
+rowCount: 100
+fields:
+  - name: teacher_no
+    type: STRING
+    generator:
+      pattern: "TCH{auto_increment:4d}"
+
+  - name: name
+    type: STRING
+    null_probability: 0.05
+    generator:
+      values: ["张教授", "李教授", "王副教授", "赵讲师", "刘教授", "陈副教授", "杨讲师", "周教授", "吴副教授", "郑讲师"]
+
+  - name: gender
+    type: STRING
+    generator:
+      values: ["M", "F"]
+
+  - name: title
+    type: STRING
+    generator:
+      values: ["PROFESSOR", "ASSOCIATE", "LECTURER", "ASSISTANT"]
+
+  - name: degree
+    type: STRING
+    generator:
+      values: ["博士", "硕士", "学士"]
+
+  - name: department
+    type: STRING
+    generator:
+      values: ["计算机系", "数学系", "英语系", "物理系", "化学系", "生物系", "历史系", "哲学系", "经济系", "法律系"]
+
+  - name: phone
+    type: STRING
+    null_probability: 0.05
+    generator:
+      pattern: "1{random:10d}"
+
+  - name: email
+    type: STRING
+    generator:
+      template: "{name}@edu.cn"
+
+  - name: hire_date
+    type: DATE
+    null_probability: 0.05
+    generator:
+      range: ["2005-01-01", "2023-12-31"]
+
+  - name: salary_level
+    type: INTEGER
+    generator:
+      range: [1, 10]
+
+  - name: is_advisor
+    type: STRING
+    generator:
+      values: ["Y", "N"]
+
+  - name: max_courses
+    type: INTEGER
+    generator:
+      range: [1, 6]
+
+  - name: status
+    type: STRING
+    generator:
+      fixed: "ACTIVE"

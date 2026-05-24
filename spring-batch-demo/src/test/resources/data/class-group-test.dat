@@ -1,0 +1,7 @@
+class_no|class_name|grade|major|department|head_teacher|student_count|classroom|building|enrollment_year|status
+CS101|计算机科学一班|1|计算机科学与技术|计算机学院|张教授|45|A101|主教学楼|2024|ACTIVE
+CS102|计算机科学二班|1|计算机科学与技术|计算机学院|李教授|42|A102|主教学楼|2024|ACTIVE
+PHY|物理学一班|2|物理学|物理学院|王教授|30|B201|物理楼|2023|ACTIVE
+|||1|||30|C301||2024|active
+CS104||2|||35||||2025|GRADUATED
+||1|||28||||2024|INVALID

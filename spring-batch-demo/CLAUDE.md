@@ -71,3 +71,39 @@ Java 17, Spring Boot 3.5.14, Spring Batch 5, Spring Data JPA, H2, Liquibase, Map
 ./mvnw spring-boot:run                # Start app
 ./mvnw clean package -DskipTests      # Package
 ```
+
+---
+
+## Project Architecture
+
+```
+src/main/java/cn/reid/springbatchdemo/
+├── SpringBatchDemoApplication.java
+├── config/FileJobConfig.java         # Single job(fileJob)+step(fileStep), chunk=500
+├── controller/FileProcessController.java  # POST /api/file/process?fileType=&filePath=
+├── entity/Student.java               # JPA @Entity → t_student
+├── dto/{StudentDTO,FileProcessResponse}.java
+├── mapper/{StudentFieldSetMapper,StudentMapper}.java
+├── processor/StudentProcessor.java   # Validates/filters Student items
+├── listener/FileProcessingMetricsListener.java
+├── monitor/                          # ItemTimingListener, ChunkMonitorLogger, SkipCollectorListener, etc.
+└── datagen/                          # CLI data generator, 6 generator strategies, YAML-driven
+
+src/main/resources/
+├── application.properties            # H2 file DB, batch disabled
+├── logback-spring.xml                # App/Monitor/Chunk/SQL/Error + console
+├── data-config/student.yaml          # Student field gen rules
+├── sql/student-insert.sql            # INSERT ... ON DUPLICATE KEY UPDATE
+└── db/changelog/                     # Liquibase: t_student + batch metadata tables
+
+src/test/resources/
+└── data/student-test.dat             # 6 rows (3 valid, 3 filtered)
+```
+
+### fileType Extension Points
+
+`#{jobParameters['fileType']}` drives: `classpath:sql/{fileType}-insert.sql`, `/data-config/{fileType}.yaml`, monitoring JSON.
+
+### Constraints (single-table only)
+
+All generics hardcoded to `Student` (reader, processor, writer, timing/skip listeners). One FieldSetMapper, one Processor, one SQL file.

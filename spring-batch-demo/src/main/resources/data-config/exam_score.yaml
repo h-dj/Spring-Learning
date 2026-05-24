@@ -1,0 +1,60 @@
+table: t_exam_score
+delimiter: "|"
+header: true
+rowCount: 100
+fields:
+  - name: student_no
+    type: STRING
+    generator:
+      pattern: "STU{auto_increment:3d}"
+
+  - name: course_code
+    type: STRING
+    generator:
+      values: ["CS101", "CS102", "MATH201", "ENG101", "PHY101"]
+
+  - name: score
+    type: STRING
+    null_probability: 0.05
+    generator:
+      range: [0, 100]
+
+  - name: exam_date
+    type: DATE
+    null_probability: 0.05
+    generator:
+      range: ["2024-01-01", "2024-12-31"]
+
+  - name: exam_type
+    type: STRING
+    generator:
+      values: ["FINAL", "MIDTERM", "QUIZ", "MAKEUP"]
+
+  - name: credit_points
+    type: STRING
+    null_probability: 0.05
+    generator:
+      values: ["1.0", "2.0", "3.0", "4.0", "5.0"]
+
+  - name: rank
+    type: INTEGER
+    null_probability: 0.1
+    generator:
+      range: [1, 100]
+
+  - name: passed
+    type: STRING
+    generator:
+      values: ["Y", "N"]
+
+  - name: comments
+    type: STRING
+    null_probability: 0.3
+    generator:
+      values: ["Good work", "Needs improvement", "Excellent", "Average", ""]
+
+  - name: graded_by
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["Dr. Smith", "Prof. Johnson", "Dr. Lee"]

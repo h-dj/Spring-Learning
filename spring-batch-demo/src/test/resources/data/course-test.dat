@@ -1,0 +1,7 @@
+course_code|course_name|credits|course_type|department|teacher|max_students|hours|status|description
+CS001|计算机网络|3|REQUIRED|计算机学院|张教授|60|48|ACTIVE|计算机网络基础课程
+CS002|数据结构与算法|4|ELECTIVE|计算机学院|李教授|50|64|active|数据结构与算法分析
+CS003|大学英语|2|PUBLIC|外国语学院|王教授|120|32|Active|大学英语课程
+CS004||3|REQUIRED|计算机学院|张教授|60|48|ACTIVE|空白名称测试
+CS005|无效类型课程|2|INVALID|计算机学院|赵教授|30|32|ACTIVE|非法类型测试
+|操作系统原理|3|REQUIRED|计算机学院|陈教授|60|48|ACTIVE|空白代码测试
