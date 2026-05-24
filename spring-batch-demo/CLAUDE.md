@@ -73,3 +73,17 @@ Java 17, Spring Boot 3.5.14, Spring Batch 5, Spring Data JPA, H2, Liquibase, Map
 ./mvnw spring-boot:run                # Start app
 ./mvnw clean package -DskipTests      # Package
 ```
+
+### Logging Conventions
+
+- Configuration: `src/main/resources/logback-spring.xml` (single file, `<springProfile>` for environment differentiation).
+- File output in `./logs/` directory with four categories:
+  - `app/` — application business logs (rolling by day, 30 days retention).
+  - `error/` — ERROR level only (rolling by day, 60 days retention).
+  - `monitor/` — batch job metrics in JSON format via `MonitorLogger` (rolling by day, 30 days retention).
+  - `sql/` — Hibernate SQL + bind parameters (rolling by size 50MB, 3 files retention).
+- Console level: DEBUG in `dev` profile, WARN in non-dev profiles.
+- Use `MonitorLogger` (injectable `@Component`) for batch monitoring metrics — not raw `log.info()`.
+- MonitorLogger uses Jackson `ObjectMapper` to write JSON lines; no `net.logstash.logback` dependency.
+- All logger levels are defined in `logback-spring.xml`, not in `application.properties`.
+- Batch step metrics include: fileType, filePath, duration, read/write/filter/skip/rollback counts, commitCount, exitStatus, timestamps.
