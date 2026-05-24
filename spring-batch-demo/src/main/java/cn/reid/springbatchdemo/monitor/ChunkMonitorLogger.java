@@ -23,19 +23,22 @@ class ChunkMonitorLogger {
     void logChunk(String jobName, String stepName, int chunkIndex,
                   int itemCount, long readDurationNs, long processDurationNs,
                   long writeDurationNs, long readCount, long writeCount,
-                  long filterCount, LocalDateTime startTime, LocalDateTime endTime) {
+                  long filterCount, String fileType,
+                  LocalDateTime startTime, LocalDateTime endTime) {
         try {
             Map<String, Object> m = new LinkedHashMap<>();
             m.put("eventType", "CHUNK_COMPLETION");
             m.put("timestamp", endTime.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
             m.put("jobName", jobName);
             m.put("stepName", stepName);
+            m.put("thread", Thread.currentThread().getName());
+            m.put("fileType", fileType);
             m.put("chunkIndex", chunkIndex);
             m.put("itemCount", itemCount);
-            m.put("readDurationMs", readDurationNs / 1_000_000);
-            m.put("processDurationMs", processDurationNs / 1_000_000);
-            m.put("writeDurationMs", writeDurationNs / 1_000_000);
-            m.put("chunkTotalDurationMs", (readDurationNs + processDurationNs + writeDurationNs) / 1_000_000);
+            m.put("readDurationMs", Math.round(readDurationNs / 10_000.0) / 100.0);
+            m.put("processDurationMs", Math.round(processDurationNs / 10_000.0) / 100.0);
+            m.put("writeDurationMs", Math.round(writeDurationNs / 10_000.0) / 100.0);
+            m.put("chunkTotalDurationMs", Math.round((readDurationNs + processDurationNs + writeDurationNs) / 10_000.0) / 100.0);
             m.put("readCount", readCount);
             m.put("writeCount", writeCount);
             m.put("filterCount", filterCount);

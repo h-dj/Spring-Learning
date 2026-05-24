@@ -8,6 +8,9 @@ import cn.reid.springbatchdemo.monitor.ItemTimingListener;
 import cn.reid.springbatchdemo.monitor.MonitoringFacade;
 import cn.reid.springbatchdemo.monitor.SkipCollectorListener;
 import cn.reid.springbatchdemo.processor.StudentProcessor;
+import org.springframework.batch.core.ItemProcessListener;
+import org.springframework.batch.core.ItemReadListener;
+import org.springframework.batch.core.ItemWriteListener;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.StepScope;
@@ -115,12 +118,14 @@ public class FileJobConfig {
             MonitoringFacade monitoringFacade) {
 
         return new StepBuilder("fileStep", jobRepository)
-                .<Student, Student>chunk(100, transactionManager)
+                .<Student, Student>chunk(500, transactionManager)
                 .reader(studentReader)
                 .processor(studentProcessor)
                 .writer(studentWriter)
                 .listener(listener)
-                .listener((Object) timingListener)
+                .listener((ItemReadListener<Student>) timingListener)
+                .listener((ItemProcessListener<Student, Student>) timingListener)
+                .listener((ItemWriteListener<Student>) timingListener)
                 .listener(skipListener)
                 .listener(new ChunkMetricsChunkListener(timingListener, skipListener, listener, monitoringFacade))
                 .faultTolerant()

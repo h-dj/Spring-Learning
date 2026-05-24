@@ -1,7 +1,7 @@
 table: t_student
 delimiter: "|"
 header: true
-rowCount: 20000000
+rowCount: 100
 fields:
   - name: student_no
     type: STRING

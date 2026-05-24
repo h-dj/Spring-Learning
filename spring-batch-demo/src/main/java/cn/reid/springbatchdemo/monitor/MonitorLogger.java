@@ -33,6 +33,7 @@ class MonitorLogger {
             metrics.put("eventType", "STEP_COMPLETION");
             metrics.put("jobName", stepExecution.getJobExecution().getJobInstance().getJobName());
             metrics.put("stepName", stepExecution.getStepName());
+            metrics.put("thread", Thread.currentThread().getName());
 
             long execId = stepExecution.getId();
             metrics.put("stepExecutionId", execId);

@@ -38,6 +38,7 @@ public class ChunkMetricsChunkListener implements ChunkListener {
         var stepCtx = context.getStepContext().getStepExecution();
         String jobName = stepCtx.getJobExecution().getJobInstance().getJobName();
         String stepName = stepCtx.getStepName();
+        String fileType = stepCtx.getJobParameters().getString("fileType");
         int itemCount = (int) (stepCtx.getReadCount() - stepCtx.getRollbackCount());
 
         monitoringFacade.logChunkMetrics(
@@ -49,6 +50,7 @@ public class ChunkMetricsChunkListener implements ChunkListener {
                 stepCtx.getReadCount(),
                 stepCtx.getWriteCount(),
                 Math.max(0, stepCtx.getReadCount() - stepCtx.getWriteCount() - stepCtx.getSkipCount()),
+                fileType,
                 chunkStart, chunkEnd
         );
     }

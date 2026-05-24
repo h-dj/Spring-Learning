@@ -31,9 +31,10 @@ public class MonitoringFacade {
     public void logChunkMetrics(String jobName, String stepName, int chunkIndex,
                                  int itemCount, long readDurationNs, long processDurationNs,
                                  long writeDurationNs, long readCount, long writeCount,
-                                 long filterCount, LocalDateTime startTime, LocalDateTime endTime) {
+                                 long filterCount, String fileType,
+                                 LocalDateTime startTime, LocalDateTime endTime) {
         chunkMonitorLogger.logChunk(jobName, stepName, chunkIndex, itemCount,
                 readDurationNs, processDurationNs, writeDurationNs,
-                readCount, writeCount, filterCount, startTime, endTime);
+                readCount, writeCount, filterCount, fileType, startTime, endTime);
     }
 }
