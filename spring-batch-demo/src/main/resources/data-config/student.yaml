@@ -1,0 +1,52 @@
+table: t_student
+delimiter: "|"
+header: true
+rowCount: 20000000
+fields:
+  - name: student_no
+    type: STRING
+    generator:
+      pattern: "TEST{auto_increment:3d}"
+
+  - name: name
+    type: STRING
+    null_probability: 0.1
+    generator:
+      values: ["张三", "李四", "王五", "赵六", "测试学生A", "测试学生B", "测试学生C"]
+
+  - name: gender
+    type: STRING
+    generator:
+      values: ["M", "F"]
+
+  - name: birth_date
+    type: DATE
+    null_probability: 0.05
+    generator:
+      range: ["2000-01-01", "2005-12-31"]
+
+  - name: phone
+    type: STRING
+    null_probability: 0.1
+    generator:
+      pattern: "1{random:10d}"
+
+  - name: email
+    type: STRING
+    generator:
+      template: "{name}@email.com"
+
+  - name: class_name
+    type: STRING
+    generator:
+      values: ["测试一班", "测试二班", "测试三班"]
+
+  - name: enrollment_year
+    type: INTEGER
+    generator:
+      range: [2020, 2025]
+
+  - name: status
+    type: STRING
+    generator:
+      fixed: "ACTIVE"
