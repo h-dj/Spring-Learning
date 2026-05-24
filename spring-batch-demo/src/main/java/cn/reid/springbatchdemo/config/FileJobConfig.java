@@ -3,6 +3,10 @@ package cn.reid.springbatchdemo.config;
 import cn.reid.springbatchdemo.entity.Student;
 import cn.reid.springbatchdemo.listener.FileProcessingMetricsListener;
 import cn.reid.springbatchdemo.mapper.StudentFieldSetMapper;
+import cn.reid.springbatchdemo.monitor.ChunkMetricsChunkListener;
+import cn.reid.springbatchdemo.monitor.ItemTimingListener;
+import cn.reid.springbatchdemo.monitor.MonitoringFacade;
+import cn.reid.springbatchdemo.monitor.SkipCollectorListener;
 import cn.reid.springbatchdemo.processor.StudentProcessor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -105,7 +109,10 @@ public class FileJobConfig {
             FlatFileItemReader<Student> studentReader,
             StudentProcessor studentProcessor,
             JdbcBatchItemWriter<Student> studentWriter,
-            FileProcessingMetricsListener listener) {
+            FileProcessingMetricsListener listener,
+            ItemTimingListener timingListener,
+            SkipCollectorListener skipListener,
+            MonitoringFacade monitoringFacade) {
 
         return new StepBuilder("fileStep", jobRepository)
                 .<Student, Student>chunk(100, transactionManager)
@@ -113,6 +120,9 @@ public class FileJobConfig {
                 .processor(studentProcessor)
                 .writer(studentWriter)
                 .listener(listener)
+                .listener((Object) timingListener)
+                .listener(skipListener)
+                .listener(new ChunkMetricsChunkListener(timingListener, skipListener, listener, monitoringFacade))
                 .faultTolerant()
                 .skip(FlatFileParseException.class)
                 .skipLimit(Integer.MAX_VALUE)

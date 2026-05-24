@@ -1,6 +1,7 @@
 package cn.reid.springbatchdemo.listener;
 
-import cn.reid.springbatchdemo.monitor.MonitorLogger;
+import cn.reid.springbatchdemo.monitor.MonitoringFacade;
+import cn.reid.springbatchdemo.monitor.SkipCollectorListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.ExitStatus;
@@ -13,16 +14,21 @@ public class FileProcessingMetricsListener implements StepExecutionListener {
 
     private static final Logger log = LoggerFactory.getLogger(FileProcessingMetricsListener.class);
 
-    private final MonitorLogger monitorLogger;
+    private final MonitoringFacade monitoringFacade;
+    private final SkipCollectorListener skipCollectorListener;
     private long startTime;
 
-    public FileProcessingMetricsListener(MonitorLogger monitorLogger) {
-        this.monitorLogger = monitorLogger;
+    public FileProcessingMetricsListener(MonitoringFacade monitoringFacade,
+                                          SkipCollectorListener skipCollectorListener) {
+        this.monitoringFacade = monitoringFacade;
+        this.skipCollectorListener = skipCollectorListener;
     }
 
     @Override
     public void beforeStep(StepExecution stepExecution) {
         this.startTime = System.currentTimeMillis();
+        skipCollectorListener.reset();
+        skipCollectorListener.enable();
 
         String fileType = stepExecution.getJobParameters().getString("fileType");
         String filePath = stepExecution.getJobParameters().getString("filePath");
@@ -37,7 +43,17 @@ public class FileProcessingMetricsListener implements StepExecutionListener {
         String fileType = stepExecution.getJobParameters().getString("fileType");
         String filePath = stepExecution.getJobParameters().getString("filePath");
 
-        monitorLogger.logMetrics(stepExecution, startTime, duration, fileType, filePath);
+        monitoringFacade.logStepMetrics(stepExecution, startTime, duration, fileType, filePath);
+
+        // 输出跳过原因汇总
+        skipCollectorListener.disable();
+        int totalSkips = skipCollectorListener.getTotalSkips();
+        if (totalSkips > 0) {
+            String jobName = stepExecution.getJobExecution().getJobInstance().getJobName();
+            monitoringFacade.logSkipSummary(
+                    jobName, stepExecution.getStepName(),
+                    totalSkips, skipCollectorListener.getSummary());
+        }
 
         return stepExecution.getExitStatus();
     }

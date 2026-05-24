@@ -5,7 +5,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.StepExecution;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 import java.time.ZoneId;
@@ -13,19 +12,18 @@ import java.time.format.DateTimeFormatter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@Component
-public class MonitorLogger {
+class MonitorLogger {
 
     private static final Logger log = LoggerFactory.getLogger("MonitorLogger");
 
     private final ObjectMapper objectMapper;
 
-    public MonitorLogger(ObjectMapper objectMapper) {
+    MonitorLogger(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 
-    public void logMetrics(StepExecution stepExecution, long startTime, long duration,
-                           String fileType, String filePath) {
+    void logMetrics(StepExecution stepExecution, long startTime, long duration,
+                    String fileType, String filePath) {
         try {
             Map<String, Object> metrics = new LinkedHashMap<>();
             metrics.put("timestamp",
@@ -69,6 +67,21 @@ public class MonitorLogger {
             log.info(objectMapper.writeValueAsString(metrics));
         } catch (JsonProcessingException e) {
             log.error("序列化监控指标失败", e);
+        }
+    }
+
+    void logSkipSummary(String jobName, String stepName, int totalSkips, Map<String, Integer> skipReasons) {
+        try {
+            Map<String, Object> m = new LinkedHashMap<>();
+            m.put("eventType", "SKIP_SUMMARY");
+            m.put("timestamp", DateTimeFormatter.ISO_LOCAL_DATE_TIME.withZone(ZoneId.systemDefault()).format(Instant.now()));
+            m.put("jobName", jobName);
+            m.put("stepName", stepName);
+            m.put("totalSkips", totalSkips);
+            m.put("skipReasons", skipReasons);
+            log.info(objectMapper.writeValueAsString(m));
+        } catch (JsonProcessingException e) {
+            log.error("序列化skip汇总失败", e);
         }
     }
 }

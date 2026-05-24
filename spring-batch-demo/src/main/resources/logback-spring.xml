@@ -76,11 +76,27 @@
         </encoder>
     </appender>
 
+    <appender name="CHUNK_MONITOR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH}/chunk-monitor/chunk-monitor.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH}/chunk-monitor/chunk-monitor.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
     <!-- ========== LOGGERS ========== -->
 
     <!-- MonitorLogger - routed to MONITOR_FILE only, no propagation -->
     <logger name="MonitorLogger" level="INFO" additivity="false">
         <appender-ref ref="MONITOR_FILE"/>
+    </logger>
+
+    <!-- ChunkMonitorLogger - routed to CHUNK_MONITOR_FILE only, no propagation -->
+    <logger name="ChunkMonitorLogger" level="INFO" additivity="false">
+        <appender-ref ref="CHUNK_MONITOR_FILE"/>
     </logger>
 
     <!-- Hibernate SQL - routed to SQL_FILE only, no propagation -->
