@@ -1,0 +1,6 @@
+
+### 请求student
+POST {{baseUrl}}/api/file/process
+Content-Type: application/x-www-form-urlencoded
+
+fileType=student&filePath=data/student.dat
