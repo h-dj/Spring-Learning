@@ -5,6 +5,7 @@ import cn.reid.springjmsibm.dto.BrowseMessageDTO;
 import cn.reid.springjmsibm.service.JmsBrowseService;
 import cn.reid.springjmsibm.service.MqAdminService;
 import cn.reid.springjmsibm.service.MqMessageService;
+import cn.reid.springjmsibm.service.MqRequestReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +25,7 @@ public class MqController {
     private final MqMessageService mqMessageService;
     private final MqAdminService mqAdminService;
     private final JmsBrowseService jmsBrowseService;
+    private final MqRequestReplyService mqRequestReplyService;
 
     /**
      * 发送消息到 MQ
@@ -169,6 +171,35 @@ public class MqController {
                 "message", "JMS browsed " + messages.size() + " messages from " + queueName,
                 "depth", depth,
                 "data", messages
+        );
+    }
+
+    /**
+     * 发送请求并同步等待回复（correlId 匹配模式）
+     * GET /mq/request-reply?msg=hello&timeout=5000
+     *
+     * 请求发送到 send-queue（DEV.QUEUE.2），
+     * 自动回复监听器（MqRequestAutoReplyListener）收到后回复到 receive-queue（DEV.QUEUE.1），
+     * 通过 JMSCorrelationID 匹配请求与回复。
+     *
+     * http://127.0.0.1:8080/mq/request-reply?msg=hello
+     */
+    @GetMapping("/request-reply")
+    public Map<String, Object> requestReply(
+            @RequestParam(defaultValue = "Hello IBM MQ") String msg,
+            @RequestParam(defaultValue = "10000") long timeout) {
+        String reply = mqRequestReplyService.sendAndReceive(msg, timeout);
+        if (reply != null) {
+            return Map.of(
+                    "code", 200,
+                    "message", "Request-Reply completed",
+                    "data", reply
+            );
+        }
+        return Map.of(
+                "code", 408,
+                "message", "No reply received within timeout",
+                "data", null
         );
     }
 }
