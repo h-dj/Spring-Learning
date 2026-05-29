@@ -45,17 +45,23 @@ public class MqMessageService {
      * 同步接收消息（等待指定时间）
      */
     public String receiveMessage(long timeoutMillis) {
-        Message message = jmsTemplate.receive(sendQueue);
-        if (message instanceof TextMessage textMessage) {
-            try {
-                String text = textMessage.getText();
-                log.info("Received message from queue [{}]: {}", sendQueue, text);
-                return text;
-            } catch (JMSException e) {
-                log.error("Failed to read message", e);
-                return null;
+        long originalTimeout = jmsTemplate.getReceiveTimeout();
+        jmsTemplate.setReceiveTimeout(timeoutMillis);
+        try {
+            Message message = jmsTemplate.receive(sendQueue);
+            if (message instanceof TextMessage textMessage) {
+                try {
+                    String text = textMessage.getText();
+                    log.info("Received message from queue [{}]: {}", sendQueue, text);
+                    return text;
+                } catch (JMSException e) {
+                    log.error("Failed to read message", e);
+                    return null;
+                }
             }
+            return null;
+        } finally {
+            jmsTemplate.setReceiveTimeout(originalTimeout);
         }
-        return null;
     }
 }
