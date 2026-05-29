@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: spring-jms-ibm
+
+jms:
+  listener:
+    auto-startup: true
+
+# IBM MQ 连接配置
+ibm:
+  mq:
+    queue-manager: QM1
+    channel: DEV.APP.SVRCONN
+    conn-name: 192.168.56.80(31414)
+    user: app
+    password: 123456
+    receive-queue: DEV.QUEUE.1
+    send-queue: DEV.QUEUE.2
+
+server:
+  port: 8080
