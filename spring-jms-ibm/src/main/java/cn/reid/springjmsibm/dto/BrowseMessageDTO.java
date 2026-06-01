@@ -40,4 +40,7 @@ public class BrowseMessageDTO {
 
     /** 回复队列管理器名 */
     private String replyToQueueManager;
+
+    public int backoutCount;
+    public int priority;
 }

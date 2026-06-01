@@ -2,19 +2,13 @@ package cn.reid.springjmsibm.service;
 
 import cn.reid.springjmsibm.dto.BrowseFilter;
 import cn.reid.springjmsibm.dto.BrowseMessageDTO;
-import com.ibm.mq.MQException;
-import com.ibm.mq.MQGetMessageOptions;
-import com.ibm.mq.MQMessage;
-import com.ibm.mq.MQQueue;
-import com.ibm.mq.MQQueueManager;
+import com.ibm.mq.*;
 import com.ibm.mq.constants.CMQC;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -93,7 +87,10 @@ public class MqAdminService {
                             .replyToQueueManager(mqMsg.replyToQueueManagerName)
                             .putUserId(mqMsg.userId)
                             .putApplName(mqMsg.putApplicationName)
+                            .backoutCount(mqMsg.backoutCount)
+                            .priority(mqMsg.priority)
                             .messageSize(msgSize);
+
 
                     // Format timestamp from MQMD PutDate/PutTime
                     builder.timestamp(formatPutDateTime(mqMsg.putDateTime));

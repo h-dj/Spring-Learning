@@ -5,7 +5,6 @@ import jakarta.jms.Message;
 import jakarta.jms.TextMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.stereotype.Component;
 
 @Slf4j
@@ -19,7 +18,7 @@ public class MqMessageListener {
      * 监听 IBM MQ 队列，自动接收消息
      * 使用默认的 JmsListenerContainerFactory（由 mq-jms-spring-boot-starter 自动配置）
      */
-    @JmsListener(destination = "DEV.QUEUE.1")
+//    @JmsListener(destination = "DEV.QUEUE.1")
     public void onMessage(Message message) {
         if (message instanceof TextMessage textMessage) {
             try {

@@ -47,7 +47,7 @@ public class MqController {
      * 发送消息到指定队列
      * GET /mq/send-to?queue=QUEUE.NAME&msg=hello
      *
-     * http://127.0.0.1:8080/mq/send-to?queue=DEV.QUEUE.1&msg=hello
+     * http://127.0.0.1:8080/mq/send-to?queue=DEV.QUEUE.2&msg=hello
      */
     @GetMapping("/send-to")
     public Map<String, Object> sendToQueue(

@@ -30,6 +30,12 @@
             <groupId>com.ibm.mq</groupId>
             <artifactId>mq-jms-spring-boot-starter</artifactId>
             <version>3.1.5</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>com.ibm.mq.jakarta.client</artifactId>
+                    <groupId>com.ibm.mq</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
         <!-- IBM MQ 9.3.x All Client (with Jakarta EE support) -->
@@ -37,7 +43,13 @@
         <dependency>
             <groupId>com.ibm.mq</groupId>
             <artifactId>com.ibm.mq.jakarta.client</artifactId>
-            <version>9.3.4.1</version>
+            <version>9.3.4.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ibm.mq</groupId>
+            <artifactId>com.ibm.mq.allclient</artifactId>
+            <version>9.3.4.0</version>
         </dependency>
 
         <dependency>
