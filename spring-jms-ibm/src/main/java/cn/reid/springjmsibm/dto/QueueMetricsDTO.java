@@ -31,6 +31,12 @@ public class QueueMetricsDTO {
     private long totalEnqueueCount;
     /** 累计出队（get）消息总数 */
     private long totalDequeueCount;
+    /** 浏览范围内消息的回退次数总和（上限 500 条） */
+    private long totalBackoutCount;
+    /** 浏览范围内回退次数 >= backoutThreshold 的消息数（毒消息） */
+    private long poisonMessageCount;
+    /** 死信队列当前深度（整个 QMgr 级别，所有队列相同） */
+    private int dlqDepth;
     /** 非正常时填充错误信息，正常时为 null */
     private String error;
 }

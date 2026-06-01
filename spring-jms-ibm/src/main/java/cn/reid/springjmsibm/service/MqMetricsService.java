@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
@@ -24,7 +25,7 @@ import java.util.List;
 public class MqMetricsService {
 
     private static final DateTimeFormatter DATE_TIME_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-    private static final int MAX_BROWSE_FOR_NEWEST = 500;
+    private static final int MAX_BROWSE_LIMIT = 500;
 
     private final MQQueueManager mqQueueManager;
 
@@ -32,14 +33,17 @@ public class MqMetricsService {
      * 批量查询多个队列的监控指标，单个失败不影响其他队列
      */
     public List<QueueMetricsDTO> getQueueMetrics(List<String> queueNames) {
+        // 先获取 DLQ 深度（QMgr 级别，对所有队列相同）
+        int dlqDepth = getDlqDepth();
         List<QueueMetricsDTO> results = new ArrayList<>(queueNames.size());
         for (String queueName : queueNames) {
             try {
-                results.add(getSingleQueueMetrics(queueName));
+                results.add(getSingleQueueMetrics(queueName, dlqDepth));
             } catch (Exception e) {
                 log.warn("Failed to get metrics for queue [{}]: {}", queueName, e.getMessage());
                 results.add(QueueMetricsDTO.builder()
                         .queueName(queueName)
+                        .dlqDepth(dlqDepth)
                         .error(e.getMessage())
                         .build());
             }
@@ -47,14 +51,19 @@ public class MqMetricsService {
         return results;
     }
 
+    public QueueMetricsDTO getSingleQueueMetrics(String queueName) throws MQException {
+        return getSingleQueueMetrics(queueName, getDlqDepth());
+    }
+
     /**
      * 查询单个队列的监控指标
      * <p>
-     * 分两阶段:
-     * 1. MQOO_INQUIRE 打开 → 用 getter 方法获取主要指标 + inquire 获取无 getter 的指标
-     * 2. 若有消息 → MQOO_BROWSE 打开浏览最老/最新消息时间
+     * 分三阶段:
+     * 1. MQOO_INQUIRE → getter 方法 + inquire 获取无 getter 的属性
+     * 2. 若有消息 → MQOO_BROWSE 浏览时间和回退/毒消息统计
+     * 3. DLQ 深度（QMgr 级别）
      */
-    public QueueMetricsDTO getSingleQueueMetrics(String queueName) throws MQException {
+    private QueueMetricsDTO getSingleQueueMetrics(String queueName, int dlqDepth) throws MQException {
         // Phase 1: 获取队列属性
         MQQueue queue = mqQueueManager.accessQueue(queueName, CMQC.MQOO_INQUIRE,
                 null, null, null);
@@ -72,7 +81,6 @@ public class MqMetricsService {
             inhibitGetVal = queue.getInhibitGet();
             inhibitPutVal = queue.getInhibitPut();
 
-            // 以下属性可能因 MQ 版本或权限不支持，逐个尝试
             backoutThreshold = inquireIntSafely(queue, CMQC.MQIA_BACKOUT_THRESHOLD);
             totalEnqueueCount = inquireIntSafely(queue, CMQC.MQIA_MSG_ENQ_COUNT);
             totalDequeueCount = inquireIntSafely(queue, CMQC.MQIA_MSG_DEQ_COUNT);
@@ -80,19 +88,23 @@ public class MqMetricsService {
             closeSafely(queue);
         }
 
-        // Phase 2: 若有消息则浏览时间信息
+        // Phase 2: 浏览消息获取时间 / 回退 / 毒消息统计
         String oldestMessagePutTime = null;
         String newestMessagePutTime = null;
         long oldestMessageAge = -1;
+        long totalBackoutCount = 0;
+        long poisonMessageCount = 0;
 
         if (currentDepth > 0) {
             MQQueue browseQueue = mqQueueManager.accessQueue(queueName, CMQC.MQOO_BROWSE,
                     null, null, null);
             try {
-                MessageTimeResult timeResult = browseMessageTimes(browseQueue, currentDepth);
-                oldestMessagePutTime = timeResult.oldestPutTime;
-                oldestMessageAge = timeResult.oldestAgeSeconds;
-                newestMessagePutTime = timeResult.newestPutTime;
+                BrowseResult browseResult = browseMessages(browseQueue, currentDepth, backoutThreshold);
+                oldestMessagePutTime = browseResult.oldestPutTime;
+                oldestMessageAge = browseResult.oldestAgeSeconds;
+                newestMessagePutTime = browseResult.newestPutTime;
+                totalBackoutCount = browseResult.totalBackoutCount;
+                poisonMessageCount = browseResult.poisonMessageCount;
             } finally {
                 closeSafely(browseQueue);
             }
@@ -110,36 +122,74 @@ public class MqMetricsService {
                 .backoutThreshold(backoutThreshold)
                 .totalEnqueueCount(totalEnqueueCount)
                 .totalDequeueCount(totalDequeueCount)
+                .totalBackoutCount(totalBackoutCount)
+                .poisonMessageCount(poisonMessageCount)
                 .oldestMessageAge(oldestMessageAge)
                 .oldestMessagePutTime(oldestMessagePutTime)
                 .newestMessagePutTime(newestMessagePutTime)
+                .dlqDepth(dlqDepth)
                 .build();
     }
 
+    // ── DLQ ──
+
     /**
-     * 安全地 inquire 单个整数属性，失败时返回 0 并记录警告
+     * 获取死信队列的当前深度
      */
-    private int inquireIntSafely(MQQueue queue, int selector) {
+    int getDlqDepth() {
+        String dlqName = getDlqName();
+        if (dlqName == null || dlqName.isEmpty()) {
+            return 0;
+        }
         try {
-            int[] selectors = {selector};
-            int[] result = new int[1];
-            queue.inquire(selectors, result, (byte[]) null);
-            return result[0];
+            MQQueue dlq = mqQueueManager.accessQueue(dlqName, CMQC.MQOO_INQUIRE,
+                    null, null, null);
+            try {
+                return dlq.getCurrentDepth();
+            } finally {
+                closeSafely(dlq);
+            }
         } catch (MQException e) {
-            log.warn("Failed to inquire attribute {} on queue [{}]: {}",
-                    attributeName(selector), queue.name, e.getMessage());
+            log.warn("Failed to get DLQ [{}] depth: {}", dlqName, e.getMessage());
             return 0;
         }
     }
 
     /**
-     * 从队列头部开始浏览消息，获取最老和最新消息的 put 时间
+     * 从队列管理器获取死信队列名称（MQCA_DEAD_LETTER_Q_NAME）
      */
-    private MessageTimeResult browseMessageTimes(MQQueue queue, int queueDepth) {
-        int toBrowse = Math.min(queueDepth, MAX_BROWSE_FOR_NEWEST);
+    private String getDlqName() {
+        try {
+            int[] selectors = {CMQC.MQCA_DEAD_LETTER_Q_NAME};
+            int[] intAttrIndexes = {-1};
+            byte[] charData = new byte[48];
+            mqQueueManager.inquire(selectors, intAttrIndexes, charData);
+            // 找到 null 终止符截断
+            int len = 0;
+            while (len < charData.length && charData[len] != 0) {
+                len++;
+            }
+            if (len > 0) {
+                return new String(charData, 0, len, StandardCharsets.US_ASCII).trim();
+            }
+        } catch (MQException e) {
+            log.warn("Failed to inquire DLQ name: {}", e.getMessage());
+        }
+        return null;
+    }
+
+    // ── 浏览 ──
+
+    /**
+     * 浏览队列消息，收集时间信息 + 回退统计 + 毒消息统计
+     */
+    private BrowseResult browseMessages(MQQueue queue, int queueDepth, int backoutThreshold) {
+        int toBrowse = Math.min(queueDepth, MAX_BROWSE_LIMIT);
         int browsed = 0;
         Calendar oldestPut = null;
         Calendar newestPut = null;
+        long totalBackoutCount = 0;
+        long poisonMessageCount = 0;
 
         try {
             MQGetMessageOptions gmo = new MQGetMessageOptions();
@@ -156,19 +206,31 @@ public class MqMetricsService {
                     oldestPut = mqMsg.putDateTime;
                 }
                 newestPut = mqMsg.putDateTime;
-                browsed++;
 
+                // 回退统计
+                int bc = mqMsg.backoutCount;
+                totalBackoutCount += bc;
+                if (backoutThreshold > 0 && bc >= backoutThreshold) {
+                    poisonMessageCount++;
+                }
+
+                browsed++;
                 gmo.options = CMQC.MQGMO_BROWSE_NEXT
                         | CMQC.MQGMO_FAIL_IF_QUIESCING
                         | CMQC.MQGMO_NO_WAIT;
             }
         } catch (MQException e) {
             if (e.reasonCode != CMQC.MQRC_NO_MSG_AVAILABLE) {
-                log.warn("Error browsing messages for time range: {}", e.getMessage());
+                log.warn("Error browsing messages: {}", e.getMessage());
             }
         }
 
-        MessageTimeResult result = new MessageTimeResult();
+        if (browsed < queueDepth) {
+            log.debug("Reached browse limit {} for queue with depth {}",
+                    MAX_BROWSE_LIMIT, queueDepth);
+        }
+
+        BrowseResult result = new BrowseResult();
         if (oldestPut != null) {
             result.oldestPutTime = formatCalendar(oldestPut);
             result.oldestAgeSeconds = (System.currentTimeMillis() - oldestPut.getTimeInMillis()) / 1000;
@@ -176,11 +238,24 @@ public class MqMetricsService {
         if (newestPut != null) {
             result.newestPutTime = formatCalendar(newestPut);
         }
-        if (browsed < queueDepth) {
-            log.debug("Reached browse limit {} for queue with depth {}, newest put time may be inaccurate",
-                    MAX_BROWSE_FOR_NEWEST, queueDepth);
-        }
+        result.totalBackoutCount = totalBackoutCount;
+        result.poisonMessageCount = poisonMessageCount;
         return result;
+    }
+
+    // ── 工具方法 ──
+
+    private int inquireIntSafely(MQQueue queue, int selector) {
+        try {
+            int[] selectors = {selector};
+            int[] result = new int[1];
+            queue.inquire(selectors, result, (byte[]) null);
+            return result[0];
+        } catch (MQException e) {
+            log.warn("Failed to inquire attribute {} on queue [{}]: {}",
+                    attributeName(selector), queue.name, e.getMessage());
+            return 0;
+        }
     }
 
     private static void closeSafely(MQQueue queue) {
@@ -201,16 +276,11 @@ public class MqMetricsService {
 
     private static String mapQueueType(int type) {
         switch (type) {
-            case CMQC.MQQT_LOCAL:
-                return "LOCAL";
-            case CMQC.MQQT_ALIAS:
-                return "ALIAS";
-            case CMQC.MQQT_REMOTE:
-                return "REMOTE";
-            case CMQC.MQQT_MODEL:
-                return "MODEL";
-            default:
-                return "UNKNOWN(" + type + ")";
+            case CMQC.MQQT_LOCAL: return "LOCAL";
+            case CMQC.MQQT_ALIAS: return "ALIAS";
+            case CMQC.MQQT_REMOTE: return "REMOTE";
+            case CMQC.MQQT_MODEL: return "MODEL";
+            default: return "UNKNOWN(" + type + ")";
         }
     }
 
@@ -221,9 +291,11 @@ public class MqMetricsService {
         return String.valueOf(selector);
     }
 
-    private static class MessageTimeResult {
+    private static class BrowseResult {
         String oldestPutTime;
         long oldestAgeSeconds;
         String newestPutTime;
+        long totalBackoutCount;
+        long poisonMessageCount;
     }
 }

@@ -184,7 +184,7 @@ public class MqController {
      * 返回每个队列的深度、容量、消费者/生产者连接数、运行状态、最老消息时间等指标。
      * 单个队列查询失败不影响其他队列结果。
      *
-     * http://127.0.0.1:8080/mq/metrics/queues?queueNames=DEV.QUEUE.1,DEV.QUEUE.2
+     * http://127.0.0.1:8080/mq/metrics/queues?queuDEV.QUEUE.1,DEV.QUEUE.2
      */
     @GetMapping("/metrics/queues")
     public Map<String, Object> queueMetrics(@RequestParam List<String> queueNames) {
