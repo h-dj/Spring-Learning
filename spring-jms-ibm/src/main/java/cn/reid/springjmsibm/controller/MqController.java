@@ -2,9 +2,11 @@ package cn.reid.springjmsibm.controller;
 
 import cn.reid.springjmsibm.dto.BrowseFilter;
 import cn.reid.springjmsibm.dto.BrowseMessageDTO;
+import cn.reid.springjmsibm.dto.QueueMetricsDTO;
 import cn.reid.springjmsibm.service.JmsBrowseService;
 import cn.reid.springjmsibm.service.MqAdminService;
 import cn.reid.springjmsibm.service.MqMessageService;
+import cn.reid.springjmsibm.service.MqMetricsService;
 import cn.reid.springjmsibm.service.MqRequestReplyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +28,7 @@ public class MqController {
     private final MqAdminService mqAdminService;
     private final JmsBrowseService jmsBrowseService;
     private final MqRequestReplyService mqRequestReplyService;
+    private final MqMetricsService mqMetricsService;
 
     /**
      * 发送消息到 MQ
@@ -171,6 +174,30 @@ public class MqController {
                 "message", "JMS browsed " + messages.size() + " messages from " + queueName,
                 "depth", depth,
                 "data", messages
+        );
+    }
+
+    /**
+     * 批量查询队列监控指标（原生 MQI 方式）
+     * GET /mq/metrics/queues?queueNames=DEV.QUEUE.1,DEV.QUEUE.2
+     *
+     * 返回每个队列的深度、容量、消费者/生产者连接数、运行状态、最老消息时间等指标。
+     * 单个队列查询失败不影响其他队列结果。
+     *
+     * http://127.0.0.1:8080/mq/metrics/queues?queueNames=DEV.QUEUE.1,DEV.QUEUE.2
+     */
+    @GetMapping("/metrics/queues")
+    public Map<String, Object> queueMetrics(@RequestParam List<String> queueNames) {
+        List<QueueMetricsDTO> metrics = mqMetricsService.getQueueMetrics(queueNames);
+        long successCount = metrics.stream().filter(m -> m.getError() == null).count();
+        long failedCount = metrics.size() - successCount;
+        return Map.of(
+                "code", 200,
+                "message", "Retrieved metrics for " + metrics.size() + " queues"
+                        + (failedCount > 0 ? " (" + failedCount + " failed)" : ""),
+                "successCount", successCount,
+                "failedCount", failedCount,
+                "queues", metrics
         );
     }
 
