@@ -65,8 +65,8 @@ public class JmsBrowseService {
                             continue;
                         }
 
-                        String msgId = stripMsgIdPrefix(msg.getJMSMessageID());
-                        String correlId = stripMsgIdPrefix(msg.getJMSCorrelationID());
+                        String msgId = msg.getJMSMessageID();
+                        String correlId = msg.getJMSCorrelationID();
                         String replyToQueueName = getReplyToQueueName(msg);
                         String replyToQueueManager = getStringProperty(msg, "JMS_IBM_ReplyToQMgr");
                         String putUserId = getStringProperty(msg, "JMSXUserID");

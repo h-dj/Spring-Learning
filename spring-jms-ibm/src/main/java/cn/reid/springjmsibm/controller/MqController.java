@@ -7,7 +7,9 @@ import cn.reid.springjmsibm.service.JmsBrowseService;
 import cn.reid.springjmsibm.service.MqAdminService;
 import cn.reid.springjmsibm.service.MqMessageService;
 import cn.reid.springjmsibm.service.MqMetricsService;
+import cn.reid.springjmsibm.service.MqNativeMessageService;
 import cn.reid.springjmsibm.service.MqRequestReplyService;
+import com.ibm.mq.MQException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,6 +31,7 @@ public class MqController {
     private final JmsBrowseService jmsBrowseService;
     private final MqRequestReplyService mqRequestReplyService;
     private final MqMetricsService mqMetricsService;
+    private final MqNativeMessageService mqNativeMessageService;
 
     /**
      * 发送消息到 MQ
@@ -184,7 +187,7 @@ public class MqController {
      * 返回每个队列的深度、容量、消费者/生产者连接数、运行状态、最老消息时间等指标。
      * 单个队列查询失败不影响其他队列结果。
      *
-     * http://127.0.0.1:8080/mq/metrics/queues?queuDEV.QUEUE.1,DEV.QUEUE.2
+     * http://127.0.0.1:8080/mq/metrics/queues?queueNames=DEV.QUEUE.1,DEV.QUEUE.2
      */
     @GetMapping("/metrics/queues")
     public Map<String, Object> queueMetrics(@RequestParam List<String> queueNames) {
@@ -199,6 +202,53 @@ public class MqController {
                 "failedCount", failedCount,
                 "queues", metrics
         );
+    }
+
+    /**
+     * 使用 IBM MQ 原生 API 发送消息，支持自定义 JMSMessageId。
+     * <p>
+     * 通过 MQQueueManager 直接设置 MQMD.MessageId，支持 hex 格式的自定义消息 ID。
+     * 自定义 ID 不足 24 字节时右侧补零，超出时截断；不提供时由 MQ 自动生成。
+     * 返回的 messageId 遵循 JMS 规范，格式为 "ID:" + 48 位 hex。
+     * <p>
+     * GET /mq/send-native?msg=hello
+     * GET /mq/send-native?msg=hello&messageId=AABBCCDD
+     * GET /mq/send-native?msg=hello&messageId=AABBCCDD00112233445566778899AABBCCDD00112233&queue=DEV.QUEUE.2
+     *
+     * http://127.0.0.1:8080/mq/send-native?msg=hello
+     * http://127.0.0.1:8080/mq/send-native?msg=hello&messageId=AABBCCDD00112233445566778899AABBCCDD00112233
+     */
+    @GetMapping("/send-native")
+    public Map<String, Object> sendNative(
+            @RequestParam String msg,
+            @RequestParam(required = false) String messageId,
+            @RequestParam(required = false) String queue) {
+        try {
+            Map<String, Object> result = mqNativeMessageService.sendTextMessage(queue, msg, messageId);
+            return Map.of(
+                    "code", 200,
+                    "message", "Message sent to queue [" + result.get("queue") + "]",
+                    "data", result
+            );
+        } catch (IllegalArgumentException e) {
+            log.warn("Invalid parameters for send-native: {}", e.getMessage());
+            return Map.of(
+                    "code", 400,
+                    "message", e.getMessage(),
+                    "data", null
+            );
+        } catch (MQException e) {
+            log.error("Failed to send native message to queue [{}]", queue, e);
+            return Map.of(
+                    "code", 500,
+                    "message", "MQ error: " + e.getLocalizedMessage()
+                            + " (reasonCode=" + e.reasonCode + ")",
+                    "data", Map.of(
+                            "reasonCode", e.reasonCode,
+                            "completionCode", e.completionCode
+                    )
+            );
+        }
     }
 
     /**
